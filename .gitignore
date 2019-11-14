@@ -1,0 +1,16 @@
+# Ignore these filetypes
+*~
+*.swp
+*.o
+*.a
+*.so
+*.mod
+*.x
+*.pyc
+*.sublime-workspace
+*.html
+*.png
+
+# Ignore the contents of these directories
+build/
+install/
