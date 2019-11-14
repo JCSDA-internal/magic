@@ -54,6 +54,10 @@ link_libraries(${MPI_CXX_LIBRARIES} ${MPI_Fortran_LIBRARIES})
 find_package( NetCDF REQUIRED COMPONENTS CXX Fortran )
 include_directories( ${NETCDF_INCLUDE_DIRS} )
 
+# Boost
+set( Boost_MINIMUM_VERSION "1.47" )
+include_directories( ${Boost_INCLUDE_DIR} )
+
 # eckit
 ecbuild_use_package( PROJECT eckit VERSION 0.18.0 REQUIRED )
 include_directories( ${ECKIT_INCLUDE_DIRS} )
@@ -62,28 +66,24 @@ include_directories( ${ECKIT_INCLUDE_DIRS} )
 ecbuild_use_package( PROJECT fckit VERSION 0.4.1 REQUIRED )
 include_directories( ${FCKIT_INCLUDE_DIRS} )
 
-# Boost
-set( Boost_MINIMUM_VERSION "1.47" )
-include_directories( ${Boost_INCLUDE_DIR} )
-
 # atlas
 ecbuild_use_package( PROJECT atlas VERSION 0.1.0 REQUIRED )
 include_directories( ${ATLAS_INCLUDE_DIRS} )
 
 # saber
-ecbuild_use_package( PROJECT saber VERSION 0.1.0 REQUIRED )
+ecbuild_use_package( PROJECT saber VERSION 0.0.1 REQUIRED )
 include_directories( ${SABER_INCLUDE_DIRS} )
 
 # oops
-ecbuild_use_package( PROJECT oops VERSION 0.1.0 REQUIRED )
+ecbuild_use_package( PROJECT oops VERSION 0.0.1 REQUIRED )
 include_directories( ${OOPS_INCLUDE_DIRS} )
 
 # ioda
-ecbuild_use_package( PROJECT ioda VERSION 0.1.0 REQUIRED )
+ecbuild_use_package( PROJECT ioda VERSION 0.0.1 REQUIRED )
 include_directories( ${IODA_INCLUDE_DIRS} )
 
 # ufo
-ecbuild_use_package( PROJECT ufo VERSION 0.1.0 REQUIRED )
+ecbuild_use_package( PROJECT ufo VERSION 0.0.1 REQUIRED )
 include_directories( ${UFO_INCLUDE_DIRS} )
 
 ################################################################################
@@ -118,7 +118,7 @@ include( magic_compiler_flags )
 include_directories( ${MAGIC_INCLUDE_DIRS} ${MAGIC_EXTRA_INCLUDE_DIRS} )
 
 add_subdirectory( src )
-add_subdirectory( test )
+#add_subdirectory( test )
 
 # Build Doxygen documentation
 #add_subdirectory( doc )
