@@ -34,7 +34,7 @@ namespace magic {
     public:
       static const std::string classname() {return "magic::Geometry";}
 
-      explicit Geometry(const eckit::Configuration &, const eckit::mpi::Comm &));
+      explicit Geometry(const eckit::Configuration &, const eckit::mpi::Comm &);
       Geometry(const Geometry &);
       ~Geometry();
 

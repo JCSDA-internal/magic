@@ -10,6 +10,8 @@ list( APPEND magic_src_files
 Geometry/Geometry.cc
 Geometry/Geometry.h
 Geometry/GeometryFortran.h
+Geometry/magic_geom.interface.F90
+Geometry/magic_geom_mod.f90
 
 Traits.h
 Fortran.h
