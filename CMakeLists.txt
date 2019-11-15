@@ -118,7 +118,7 @@ include( magic_compiler_flags )
 include_directories( ${MAGIC_INCLUDE_DIRS} ${MAGIC_EXTRA_INCLUDE_DIRS} )
 
 add_subdirectory( src )
-#add_subdirectory( test )
+add_subdirectory( test )
 
 # Build Doxygen documentation
 #add_subdirectory( doc )

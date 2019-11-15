@@ -30,23 +30,24 @@ namespace magic {
 /// Geometry handles geometry.
 
   class Geometry : public util::Printable,
-    private util::ObjectCounter<Geometry> {
-    public:
-      static const std::string classname() {return "magic::Geometry";}
+                   private util::ObjectCounter<Geometry> {
+   public:
+     static const std::string classname() {return "magic::Geometry";}
 
-      explicit Geometry(const eckit::Configuration &, const eckit::mpi::Comm &);
-      Geometry(const Geometry &);
-      ~Geometry();
+     explicit Geometry(const eckit::Configuration &,
+                       const eckit::mpi::Comm &);
+     Geometry(const Geometry &);
+     ~Geometry();
 
-      int& toFortran() {return keyGeom_;}
-      const int& toFortran() const {return keyGeom_;}
-      const eckit::mpi::Comm & getComm() const {return comm_;}
+     int& toFortran() {return keyGeom_;}
+     const int& toFortran() const {return keyGeom_;}
+     const eckit::mpi::Comm & getComm() const {return comm_;}
 
-    private:
-      Geometry & operator=(const Geometry &);
-      void print(std::ostream &) const;
-      int keyGeom_;
-      const eckit::mpi::Comm & comm_;
+   private:
+     Geometry & operator=(const Geometry &);
+     void print(std::ostream &) const;
+     int keyGeom_;
+     const eckit::mpi::Comm & comm_;
   };
 // -----------------------------------------------------------------------------
 
