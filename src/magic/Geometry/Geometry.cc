@@ -12,18 +12,24 @@
 #include "magic/Geometry/GeometryFortran.h"
 #include "magic/Geometry/Geometry.h"
 
+using oops::Log;
+
 // -----------------------------------------------------------------------------
 namespace magic {
 // -----------------------------------------------------------------------------
   Geometry::Geometry(const eckit::Configuration & conf,
                      const eckit::mpi::Comm & comm)
-    : comm_(comm) {
+    : comm_(comm), grid_(Grid(conf)) {
     const eckit::Configuration * configc = &conf;
+    Log::info() << "Geometry::Geometry Grid Name:        "
+                << grid_.name() << std::endl;
+    Log::info() << "Geometry::Geometry Number of Points: "
+                << grid_.size() << std::endl;
     magic_geo_setup_f90(keyGeom_, &configc);
   }
 // -----------------------------------------------------------------------------
   Geometry::Geometry(const Geometry & other)
-    : comm_(other.comm_) {
+    : comm_(other.comm_), grid_(other.grid_) {
     const int key_geo = other.keyGeom_;
     magic_geo_clone_f90(key_geo, keyGeom_);
   }

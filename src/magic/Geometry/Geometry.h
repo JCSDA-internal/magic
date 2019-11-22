@@ -12,13 +12,20 @@
 #include <string>
 #include <vector>
 
+#include <boost/shared_ptr.hpp>
+
 #include "eckit/mpi/Comm.h"
+
+#include "atlas/grid.h"
+#include "atlas/grid/detail/grid/GridFactory.h"
 
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 
 #include "magic/Fortran.h"
 #include "magic/Geometry/GeometryFortran.h"
+
+using atlas::Grid;
 
 namespace eckit {
   class Configuration;
@@ -39,15 +46,18 @@ namespace magic {
      Geometry(const Geometry &);
      ~Geometry();
 
+     const Grid & getGrid() const {return grid_;}
+     const eckit::mpi::Comm & getComm() const {return comm_;}
      int& toFortran() {return keyGeom_;}
      const int& toFortran() const {return keyGeom_;}
-     const eckit::mpi::Comm & getComm() const {return comm_;}
 
    private:
      Geometry & operator=(const Geometry &);
      void print(std::ostream &) const;
-     int keyGeom_;
      const eckit::mpi::Comm & comm_;
+     Grid grid_;
+     boost::shared_ptr<const Geometry> geom_;
+     int keyGeom_;
   };
 // -----------------------------------------------------------------------------
 
