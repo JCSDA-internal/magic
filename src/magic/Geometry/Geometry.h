@@ -18,14 +18,15 @@
 
 #include "atlas/grid.h"
 #include "atlas/grid/detail/grid/GridFactory.h"
+#include "atlas/grid/Vertical.h"
+#include "atlas/mesh/Mesh.h"
+#include "atlas/meshgenerator.h"
 
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 
 #include "magic/Fortran.h"
 #include "magic/Geometry/GeometryFortran.h"
-
-using atlas::Grid;
 
 namespace eckit {
   class Configuration;
@@ -46,7 +47,10 @@ namespace magic {
      Geometry(const Geometry &);
      ~Geometry();
 
-     const Grid & getGrid() const {return grid_;}
+     std::vector<double> getAk() const {return ak;}
+     std::vector<double> getBk() const {return bk;}
+     const atlas::StructuredGrid & getGrid() const {return grid_;}
+     const atlas::Vertical & getVerticalCoord() const {return vcoord_;}
      const eckit::mpi::Comm & getComm() const {return comm_;}
      int& toFortran() {return keyGeom_;}
      const int& toFortran() const {return keyGeom_;}
@@ -55,7 +59,10 @@ namespace magic {
      Geometry & operator=(const Geometry &);
      void print(std::ostream &) const;
      const eckit::mpi::Comm & comm_;
-     Grid grid_;
+     atlas::StructuredGrid grid_;
+     atlas::Vertical vcoord_;
+     atlas::Mesh mesh_;
+     std::vector<double> ak, bk;
      boost::shared_ptr<const Geometry> geom_;
      int keyGeom_;
   };
