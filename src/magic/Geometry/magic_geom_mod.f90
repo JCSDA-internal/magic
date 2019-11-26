@@ -5,8 +5,10 @@
 
 module magic_geom_mod
 
-use fckit_mpi_module, only: fckit_mpi_comm
 use iso_c_binding
+use kinds
+use fckit_mpi_module, only: fckit_mpi_comm
+use atlas_module
 
 implicit none
 
@@ -14,11 +16,16 @@ private
 
 !> Geometry data structure
 type, public :: magic_geom
+  integer :: npx, npy, npz
+  real(kind=kind_real), allocatable, dimension(:) :: ak, bk
+  real(kind=kind_real), allocatable, dimension(:) :: grid_xt, grid_yt
+  real(kind=kind_real), allocatable, dimension(:) :: pfull, phalf
+  real(kind=kind_real), allocatable, dimension(:,:) :: grid_lon, grid_lat
 contains
-   procedure :: init => geom_init
-   procedure :: delete => geom_delete
-   procedure :: clone => geom_clone
-   procedure :: info => geom_info
+  procedure :: init => geom_init
+  procedure :: delete => geom_delete
+  procedure :: clone => geom_clone
+  procedure :: info => geom_info
 end type magic_geom
 
 ! ------------------------------------------------------------------------------
