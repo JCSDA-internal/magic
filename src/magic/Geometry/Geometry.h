@@ -26,7 +26,6 @@
 #include "oops/util/Printable.h"
 
 #include "magic/Fortran.h"
-#include "magic/Geometry/GeometryFortran.h"
 
 namespace eckit {
   class Configuration;

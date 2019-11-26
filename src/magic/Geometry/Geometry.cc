@@ -10,7 +10,6 @@
 #include "eckit/config/Configuration.h"
 #include "eckit/exception/Exceptions.h"
 #include "oops/util/Logger.h"
-#include "magic/Fortran.h"
 #include "magic/Geometry/GeometryFortran.h"
 #include "magic/Geometry/Geometry.h"
 

@@ -13,6 +13,15 @@ Geometry/GeometryFortran.h
 Geometry/magic_geom.interface.F90
 Geometry/magic_geom_mod.f90
 
+# Fields
+Fields/Fields.cc
+Fields/Fields.h
+Fields/FieldsFortran.h
+
+# State
+State/State.cc
+State/State.h
+
 Traits.h
 Fortran.h
 )
