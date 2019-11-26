@@ -47,10 +47,12 @@ namespace magic {
      Geometry(const Geometry &);
      ~Geometry();
 
-     std::vector<double> getAk() const {return ak;}
-     std::vector<double> getBk() const {return bk;}
+     const size_t getNlevs() const {return nLevs_;}
+     std::vector<double> getAk() const {return ak_;}
+     std::vector<double> getBk() const {return bk_;}
      const atlas::StructuredGrid & getGrid() const {return grid_;}
      const atlas::Vertical & getVerticalCoord() const {return vcoord_;}
+     const atlas::Mesh & getMesh() const {return mesh_;}
      const eckit::mpi::Comm & getComm() const {return comm_;}
      int& toFortran() {return keyGeom_;}
      const int& toFortran() const {return keyGeom_;}
@@ -60,9 +62,10 @@ namespace magic {
      void print(std::ostream &) const;
      const eckit::mpi::Comm & comm_;
      atlas::StructuredGrid grid_;
-     atlas::Vertical vcoord_;
      atlas::Mesh mesh_;
-     std::vector<double> ak, bk;
+     int nLevs_;
+     std::vector<double> ak_, bk_;
+     atlas::Vertical vcoord_;
      boost::shared_ptr<const Geometry> geom_;
      int keyGeom_;
   };

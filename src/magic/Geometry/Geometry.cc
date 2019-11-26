@@ -26,14 +26,6 @@ namespace magic {
 
     grid_ = atlas::Grid(conf);
 
-    int nLevs = conf.getInt("levels", 0.);
-    std::vector<double> z(nLevs);
-    std::iota(std::begin(z), std::end(z), 0);
-    ak = conf.getDoubleVector("ak");
-    bk = conf.getDoubleVector("bk");
-
-    vcoord_ = atlas::Vertical(nLevs, z);
-
     Log::info() << "Geometry::Geometry Grid Name:        "
                 << grid_.name() << std::endl;
     Log::info() << "Geometry::Geometry Number of Points: "
@@ -44,8 +36,6 @@ namespace magic {
                 << grid_.y() << std::endl;
     Log::info() << "Geometry::Geometry Grid Projection Units: "
                 << grid_.projection().units() << std::endl;
-    Log::info() << "Geometry::Geometry (min, max) level: "
-                << vcoord_.min() << ", "<< vcoord_.max() << std::endl;
 
     Log::info() << "Geometry::Geometry Domain: " << grid_.domain()
                 << std::endl;
@@ -67,11 +57,30 @@ namespace magic {
     Log::info() << "Geometry::Geometry mesh footprint: "
                 << mesh_.footprint() << std::endl;
 
+    nLevs_ = conf.getInt("levels", 0.);
+    std::vector<double> z(nLevs_);
+    std::iota(std::begin(z), std::end(z), 0);
+    ak_ = conf.getDoubleVector("ak");
+    bk_ = conf.getDoubleVector("bk");
+
+    vcoord_ = atlas::Vertical(nLevs_, z);
+
+    Log::info() << "Geometry::Geometry (min, max) level: "
+                << vcoord_.min() << ", "<< vcoord_.max() << std::endl;
+
     magic_geo_setup_f90(keyGeom_, &configc);
   }
 // -----------------------------------------------------------------------------
   Geometry::Geometry(const Geometry & other)
-    : comm_(other.comm_), geom_(other.geom_) {
+    : comm_(other.comm_) {
+
+    grid_ = other.grid_;
+    mesh_ = other.mesh_;
+    nLevs_ = other.nLevs_;
+    ak_ = other.ak_;
+    bk_ = other.bk_;
+    vcoord_ = other.vcoord_;
+
     const int key_geo = other.keyGeom_;
     magic_geo_clone_f90(key_geo, keyGeom_);
   }
