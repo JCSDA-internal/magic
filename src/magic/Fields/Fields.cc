@@ -30,14 +30,14 @@ namespace magic {
                  const oops::Variables & vars,
                  const util::DateTime & time):
     geom_(new Geometry(geom)), vars_(vars), time_(time) {
-    const eckit::Configuration * conf = &vars_.toFortran();
+    // const eckit::Configuration * conf = &vars_.toFortran();
     // magic_field_create_f90(keyFlds_, geom_->toFortran(), &conf);
   }
 // -----------------------------------------------------------------------------
   Fields::Fields(const Fields & other, const bool copy)
     : geom_(other.geom_), vars_(other.vars_), time_(other.time_)
   {
-    const eckit::Configuration * conf = &vars_.toFortran();
+    // const eckit::Configuration * conf = &vars_.toFortran();
     // magic_field_create_f90(keyFlds_, geom_->toFortran(), &conf);
     // if (copy) {
     //   magic_field_copy_f90(keyFlds_, other.keyFlds_);
@@ -49,7 +49,7 @@ namespace magic {
   Fields::Fields(const Fields & other)
     : geom_(other.geom_), vars_(other.vars_), time_(other.time_)
   {
-    const eckit::Configuration * conf = &vars_.toFortran();
+    // const eckit::Configuration * conf = &vars_.toFortran();
     // magic_field_create_f90(keyFlds_, geom_->toFortran(), &conf);
     // magic_field_copy_f90(keyFlds_, other.keyFlds_);
   }
@@ -57,7 +57,7 @@ namespace magic {
   Fields::Fields(const Fields & other, const Geometry & geom)
     : geom_(new Geometry(geom)), vars_(other.vars_), time_(other.time_)
   {
-    const eckit::Configuration * conf = &vars_.toFortran();
+    // const eckit::Configuration * conf = &vars_.toFortran();
     // magic_field_create_f90(keyFlds_, geom_->toFortran(), &conf);
     // magic_field_change_resol_f90(keyFlds_, other.keyFlds_);
   }
@@ -65,7 +65,7 @@ namespace magic {
   Fields::Fields(const Fields & other, const oops::Variables & vars)
     : geom_(other.geom_), vars_(vars), time_(other.time_)
   {
-    const eckit::Configuration * conf = &vars_.toFortran();
+    // const eckit::Configuration * conf = &vars_.toFortran();
     // magic_field_create_f90(keyFlds_, geom_->toFortran(), &conf);
     // magic_field_copy_f90(keyFlds_, other.keyFlds_);
   }
@@ -105,7 +105,7 @@ namespace magic {
   }
 // -----------------------------------------------------------------------------
   void Fields::dirac(const eckit::Configuration & config) {
-  const eckit::Configuration * conf = &config;
+    // const eckit::Configuration * conf = &config;
     // magic_field_dirac_f90(keyFlds_, geom_->toFortran(), &conf);
   }
 // -----------------------------------------------------------------------------
@@ -114,7 +114,7 @@ namespace magic {
   }
 // -----------------------------------------------------------------------------
   double Fields::dot_product_with(const Fields & fld2) const {
-    double zz;
+    double zz = 0;
     // magic_field_dot_prod_f90(keyFlds_, fld2.keyFlds_,
     //                        geom_->toFortran(), zz);
     return zz;
@@ -131,7 +131,7 @@ namespace magic {
   void Fields::getValues(const ufo::Locations & locs,
                          const oops::Variables & vars,
                          ufo::GeoVaLs & gom) const {
-    const eckit::Configuration * conf = &vars.toFortran();
+    // const eckit::Configuration * conf = &vars.toFortran();
     // magic_field_interp_nl_f90(keyFlds_,  geom_->toFortran(),
     //                         locs.toFortran(), &conf,
     //                         gom.toFortran());
@@ -167,14 +167,14 @@ namespace magic {
   }
 // -----------------------------------------------------------------------------
   void Fields::read(const eckit::Configuration & config) {
-    const eckit::Configuration * conf = &config;
-    util::DateTime * dtp = &time_;
+    // const eckit::Configuration * conf = &config;
+    // util::DateTime * dtp = &time_;
     // magic_field_read_file_f90(keyFlds_, geom_->toFortran(), &conf, &dtp);
   }
 // -----------------------------------------------------------------------------
   void Fields::write(const eckit::Configuration & config) const {
-    const eckit::Configuration * conf = &config;
-    const util::DateTime * dtp = &time_;
+    // const eckit::Configuration * conf = &config;
+    // const util::DateTime * dtp = &time_;
     // magic_field_write_file_f90(keyFlds_, geom_->toFortran(), &conf, &dtp);
   }
 // -----------------------------------------------------------------------------

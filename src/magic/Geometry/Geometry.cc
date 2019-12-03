@@ -53,6 +53,8 @@ namespace magic {
         throw e;
     }
 
+    Log::info() << "Geometry::Geometry mesh number of nodes: "
+                << mesh_.nodes().size() << std::endl;
     Log::info() << "Geometry::Geometry mesh footprint: "
                 << mesh_.footprint() << std::endl;
 
@@ -66,6 +68,17 @@ namespace magic {
 
     Log::info() << "Geometry::Geometry (min, max) level: "
                 << vcoord_.min() << ", "<< vcoord_.max() << std::endl;
+
+    // Generate 2D and 3D functionspaces associated with grid
+    fs2d_ = atlas::functionspace::StructuredColumns(grid_, conf);
+    fs3d_ = atlas::functionspace::StructuredColumns(grid_, vcoord_, conf);
+
+    Log::info() << "Geometry::Geometry function space size: "
+                << fs3d_.size() << std::endl;
+    Log::info() << "Geometry::Geometry function space halo size: "
+                << fs3d_.halo() << std::endl;
+    Log::info() << "Geometry::Geometry function space levels: "
+                << fs3d_.levels() << std::endl;
 
     magic_geo_setup_f90(keyGeom_, &configc);
   }

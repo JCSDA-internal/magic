@@ -8,34 +8,36 @@
 ####################################################################
 
 if( HAVE_OMP )
-  set( CMAKE_CXX_FLAGS     "${CMAKE_CXX_FLAGS} -Wall -Wno-deprecated-declarations -fopenmp")
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fopenmp")
 else( )
-  set( CMAKE_CXX_FLAGS     "${CMAKE_CXX_FLAGS} -Wall -Wno-deprecated-declarations -fno-openmp")
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-openmp")
 endif( )
+
+set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Wno-deprecated-declarations" )
 
 ####################################################################
 # RELEASE FLAGS
 ####################################################################
 
-set( CMAKE_CXX_FLAGS_RELEASE     "-O3 -std=c++17" )
+set( CMAKE_CXX_FLAGS_RELEASE "-O3" )
 
 ####################################################################
 # DEBUG FLAGS
 ####################################################################
 
-set( CMAKE_CXX_FLAGS_DEBUG       "-O0 -g -std=c++17" )
+set( CMAKE_CXX_FLAGS_DEBUG   "-O0 -g" )
 
 ####################################################################
 # BIT REPRODUCIBLE FLAGS
 ####################################################################
 
-set( CMAKE_CXX_FLAGS_BIT         "-O2 -std=c++17" )
+set( CMAKE_CXX_FLAGS_BIT     "-O2" )
 
 ####################################################################
 # LINK FLAGS
 ####################################################################
 
-set( CMAKE_CXX_LINK_FLAGS        "" )
+set( CMAKE_CXX_LINK_FLAGS    "" )
 
 ####################################################################
 
