@@ -14,9 +14,9 @@ Geometry/magic_geom.interface.F90
 Geometry/magic_geom_mod.f90
 
 # Fields
-Fields/Fields.cc
-Fields/Fields.h
-Fields/FieldsFortran.h
+#Fields/Fields.cc
+#Fields/Fields.h
+#Fields/FieldsFortran.h
 
 # State
 State/State.cc

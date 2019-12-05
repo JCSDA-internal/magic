@@ -44,7 +44,7 @@ namespace magic {
 
       /// Constructor, destructor
       State(const Geometry &, const oops::Variables &,
-            const util::DateTime &);  // Is it used?
+            const util::DateTime &);
       State(const Geometry &, const oops::Variables &,
             const eckit::Configuration &);
       State(const Geometry &, const State &);
@@ -54,7 +54,7 @@ namespace magic {
       /// Basic operators
       State & operator=(const State &);
 
-      /// Interpolate to observation location
+      /// Get state values at observation locations
       void getValues(const ufo::Locations &,
                      const oops::Variables &,
                      ufo::GeoVaLs &) const;
@@ -65,26 +65,18 @@ namespace magic {
       /// I/O and diagnostics
       void read(const eckit::Configuration &);
       void write(const eckit::Configuration &) const;
-      double norm() const {return fields_->norm();}
-      const util::DateTime & validTime() const {return fields_->time();}
-      util::DateTime & validTime() {return fields_->time();}
 
-      /// Access to fields
-      Fields & fields() {return *fields_;}
-      const Fields & fields() const {return *fields_;}
-
-      boost::shared_ptr<const Geometry> geometry() const {
-        return fields_->geometry();
-      }
+      boost::shared_ptr<const Geometry> geometry() const {return geom_;}
+      const util::DateTime & validTime() const {return time_;}
+      util::DateTime & validTime() {return time_;}
 
       /// Other
+      double norm() const;
       void zero();
       void accumul(const double &, const State &);
 
    private:
       void print(std::ostream &) const;
-      boost::scoped_ptr<Fields> fields_;
-      boost::scoped_ptr<Fields> stash_;
       boost::shared_ptr<const Geometry> geom_;
       oops::Variables vars_;
       util::DateTime time_;
