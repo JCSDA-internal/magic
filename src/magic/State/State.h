@@ -33,7 +33,7 @@ namespace ufo {
 
 namespace magic {
   class Geometry;
-  // class Increment;
+  class Increment;
 
 // -----------------------------------------------------------------------------
 /// State handles model state and everything needed to propagate forward
@@ -61,7 +61,7 @@ namespace magic {
                      ufo::GeoVaLs &) const;
 
       /// Interactions with Increment
-      // State & operator+=(const Increment &);
+      State & operator+=(const Increment &);
 
       /// I/O and diagnostics
       void read(const eckit::Configuration &);

@@ -22,8 +22,8 @@
 #include "ufo/Locations.h"
 
 #include "magic/Geometry/Geometry.h"
+#include "magic/Increment/Increment.h"
 #include "magic/State/State.h"
-// #include "magic/Increment/Increment.h"
 
 namespace magic {
 
@@ -84,14 +84,14 @@ namespace magic {
 // -----------------------------------------------------------------------------
 /// Interactions with Increments
 // -----------------------------------------------------------------------------
-//  State & State::operator+=(const Increment & dx) {
-//    oops::Log::trace() << "State add increment starting." << std::endl;
-//    ASSERT(this->validTime() == dx.validTime());
+  State & State::operator+=(const Increment & dx) {
+    oops::Log::trace() << "State add increment starting." << std::endl;
+    ASSERT(this->validTime() == dx.validTime());
 //    ASSERT(fields_);
 //    fields_->add(dx.fields());
-//    oops::Log::trace() << "State add increment done." << std::endl;
-//    return *this;
-//  }
+    oops::Log::trace() << "State add increment done." << std::endl;
+    return *this;
+  }
 // -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
