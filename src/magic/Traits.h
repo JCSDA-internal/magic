@@ -11,8 +11,8 @@
 #include <string>
 
 #include "magic/Geometry/Geometry.h"
+#include "magic/State/State.h"
 //  #include "magic/Increment/Increment.h"
-//  #include "magic/State/State.h"
 
 #include "ioda/ObsSpace.h"
 #include "ioda/ObsVector.h"
@@ -32,7 +32,7 @@ struct Traits {
   static std::string nameCovar() {return "magicError";}
 
   typedef magic::Geometry           Geometry;
-//  typedef magic::State              State;
+  typedef magic::State              State;
 //  typedef magic::Increment          Increment;
 
   typedef ufo::ObsBias              ObsAuxControl;

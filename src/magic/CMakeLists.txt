@@ -22,6 +22,10 @@ Geometry/magic_geom_mod.f90
 State/State.cc
 State/State.h
 
+# IO
+IO/NetcdfIO.cc
+IO/NetcdfIO.h
+
 Traits.h
 Fortran.h
 )
