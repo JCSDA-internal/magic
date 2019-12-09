@@ -27,8 +27,8 @@ Increment/Increment.cc
 Increment/Increment.h
 
 # IO
-#IO/NetcdfIO.cc
-#IO/NetcdfIO.h
+IO/NetCDFIO.cc
+IO/NetCDFIO.h
 
 Traits.h
 Fortran.h
