@@ -8,9 +8,9 @@
 #ifndef MAGIC_IO_NETCDFIO_H_
 #define MAGIC_IO_NETCDFIO_H_
 
+#include <netcdf>
 #include <map>
 #include <memory>
-#include <netcdf>
 #include <string>
 #include <vector>
 
