@@ -7,14 +7,14 @@
 
 #include <string>
 #include <numeric>
+
 #include "eckit/config/Configuration.h"
 #include "eckit/exception/Exceptions.h"
+
 #include "oops/util/Logger.h"
-#include "magic/Fortran.h"
+
 #include "magic/Geometry/GeometryFortran.h"
 #include "magic/Geometry/Geometry.h"
-
-using oops::Log;
 
 // -----------------------------------------------------------------------------
 namespace magic {
@@ -26,36 +26,38 @@ namespace magic {
 
     grid_ = atlas::Grid(conf);
 
-    Log::info() << "Geometry::Geometry Grid Name:        "
-                << grid_.name() << std::endl;
-    Log::info() << "Geometry::Geometry Number of Points: "
-                << grid_.size() << std::endl;
-    Log::info() << "Geometry::Geometry Grid nx, ny: "
-                << grid_.nxmax() << ", " << grid_.ny() << std::endl;
-    Log::info() << "Geometry::Geometry Grid y: "
-                << grid_.y() << std::endl;
-    Log::info() << "Geometry::Geometry Grid Projection Units: "
-                << grid_.projection().units() << std::endl;
+    oops::Log::info() << "Geometry::Geometry Grid Name:        "
+                      << grid_.name() << std::endl;
+    oops::Log::info() << "Geometry::Geometry Number of Points: "
+                      << grid_.size() << std::endl;
+    oops::Log::info() << "Geometry::Geometry Grid nx, ny: "
+                      << grid_.nxmax() << ", " << grid_.ny() << std::endl;
+    oops::Log::info() << "Geometry::Geometry Grid y: "
+                      << grid_.y() << std::endl;
+    oops::Log::info() << "Geometry::Geometry Grid Projection Units: "
+                      << grid_.projection().units() << std::endl;
 
-    Log::info() << "Geometry::Geometry Domain: " << grid_.domain()
-                << std::endl;
-    Log::info() << "Geometry::Geometry Periodic: " << grid_.periodic()
-                << std::endl;
-    Log::info() << "Geometry::Geometry Spec: " << grid_.spec()
-                << std::endl;
+    oops::Log::info() << "Geometry::Geometry Domain: " << grid_.domain()
+                      << std::endl;
+    oops::Log::info() << "Geometry::Geometry Periodic: " << grid_.periodic()
+                      << std::endl;
+    oops::Log::info() << "Geometry::Geometry Spec: " << grid_.spec()
+                      << std::endl;
 
     atlas::StructuredMeshGenerator meshgenerator;
     try {
         mesh_ = meshgenerator.generate(grid_);
     }
     catch ( eckit::Exception& e ) {
-        Log::error() << e.what() << std::endl;
-        Log::error() << e.callStack() << std::endl;
+        oops::Log::error() << e.what() << std::endl;
+        oops::Log::error() << e.callStack() << std::endl;
         throw e;
     }
 
-    Log::info() << "Geometry::Geometry mesh footprint: "
-                << mesh_.footprint() << std::endl;
+    oops::Log::info() << "Geometry::Geometry mesh number of nodes: "
+                      << mesh_.nodes().size() << std::endl;
+    oops::Log::info() << "Geometry::Geometry mesh footprint: "
+                      << mesh_.footprint() << std::endl;
 
     nLevs_ = conf.getInt("levels", 0.);
     std::vector<double> z(nLevs_);
@@ -65,8 +67,19 @@ namespace magic {
 
     vcoord_ = atlas::Vertical(nLevs_, z);
 
-    Log::info() << "Geometry::Geometry (min, max) level: "
-                << vcoord_.min() << ", "<< vcoord_.max() << std::endl;
+    oops::Log::info() << "Geometry::Geometry (min, max) level: "
+                      << vcoord_.min() << ", "<< vcoord_.max() << std::endl;
+
+    // Generate 2D and 3D functionspaces associated with grid
+    fs2d_ = atlas::functionspace::StructuredColumns(grid_, conf);
+    fs3d_ = atlas::functionspace::StructuredColumns(grid_, vcoord_, conf);
+
+    oops::Log::info() << "Geometry::Geometry function space size: "
+                      << fs3d_.size() << std::endl;
+    oops::Log::info() << "Geometry::Geometry function space halo size: "
+                      << fs3d_.halo() << std::endl;
+    oops::Log::info() << "Geometry::Geometry function space levels: "
+                      << fs3d_.levels() << std::endl;
 
     magic_geo_setup_f90(keyGeom_, &configc);
   }

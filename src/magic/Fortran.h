@@ -22,6 +22,8 @@ namespace magic {
 
 // Geometry key type
 typedef int F90geom;
+// Feilds key type
+typedef int F90flds;
 // State key
 typedef int F90state;
 // Increment key

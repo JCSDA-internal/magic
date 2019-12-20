@@ -29,7 +29,7 @@ contains
 
 ! ------------------------------------------------------------------------------
 !> Setup geometry object
-subroutine c_magic_geo_setup(c_key_self, c_conf) &
+subroutine magic_geo_setup_c(c_key_self, c_conf) &
            bind(c, name='magic_geo_setup_f90')
   integer(c_int), intent(inout) :: c_key_self
   type(c_ptr),       intent(in) :: c_conf
@@ -42,11 +42,11 @@ subroutine c_magic_geo_setup(c_key_self, c_conf) &
 
   call self%init(c_conf)
 
-end subroutine c_magic_geo_setup
+end subroutine magic_geo_setup_c
 
 ! ------------------------------------------------------------------------------
 !> Clone geometry object
-subroutine c_magic_geo_clone(c_key_self, c_key_other) &
+subroutine magic_geo_clone_c(c_key_self, c_key_other) &
            bind(c, name='magic_geo_clone_f90')
   integer(c_int), intent(in   ) :: c_key_self
   integer(c_int), intent(inout) :: c_key_other
@@ -59,11 +59,11 @@ subroutine c_magic_geo_clone(c_key_self, c_key_other) &
 
   call self%clone(other)
 
-end subroutine c_magic_geo_clone
+end subroutine magic_geo_clone_c
 
 ! ------------------------------------------------------------------------------
 !> Geometry destructor
-subroutine c_magic_geo_delete(c_key_self) &
+subroutine magic_geo_delete_c(c_key_self) &
            bind(c, name='magic_geo_delete_f90')
   integer(c_int), intent(inout) :: c_key_self
 
@@ -73,11 +73,11 @@ subroutine c_magic_geo_delete(c_key_self) &
   call self%delete()
   call magic_geom_registry%remove(c_key_self)
 
-end subroutine c_magic_geo_delete
+end subroutine magic_geo_delete_c
 
 ! ------------------------------------------------------------------------------
 !> Dump basic geometry info in file and std output
-subroutine c_magic_geo_info(c_key_self) &
+subroutine magic_geo_info_c(c_key_self) &
            bind(c, name='magic_geo_info_f90')
   integer(c_int), intent(in   ) :: c_key_self
 
@@ -86,7 +86,7 @@ subroutine c_magic_geo_info(c_key_self) &
   call magic_geom_registry%get(c_key_self , self)
   call self%info()
 
-end subroutine c_magic_geo_info
+end subroutine magic_geo_info_c
 
 ! ------------------------------------------------------------------------------
 

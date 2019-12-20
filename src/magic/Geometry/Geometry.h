@@ -20,14 +20,16 @@
 #include "atlas/grid/detail/grid/GridFactory.h"
 #include "atlas/grid/Vertical.h"
 #include "atlas/mesh/Mesh.h"
+#include "atlas/mesh/Nodes.h"
 #include "atlas/meshgenerator.h"
+#include "atlas/functionspace/StructuredColumns.h"
 
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 
 #include "magic/Fortran.h"
-#include "magic/Geometry/GeometryFortran.h"
 
+// Forward declarations
 namespace eckit {
   class Configuration;
 }
@@ -63,6 +65,8 @@ namespace magic {
      const eckit::mpi::Comm & comm_;
      atlas::StructuredGrid grid_;
      atlas::Mesh mesh_;
+     atlas::functionspace::StructuredColumns fs2d_;
+     atlas::functionspace::StructuredColumns fs3d_;
      int nLevs_;
      std::vector<double> ak_, bk_;
      atlas::Vertical vcoord_;
