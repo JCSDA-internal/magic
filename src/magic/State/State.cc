@@ -34,6 +34,8 @@ namespace magic {
                const oops::Variables & vars,
                const util::DateTime & time)
     : geom_(new Geometry(geom)), vars_(vars), time_(time) {
+    fs2d_ = geom_->getFunctionSpace();
+    fld_ = fs2d_.createField<double>(atlas::option::name("psfc") | atlas::option::levels(false));
     oops::Log::trace() << "State::State created." << std::endl;
   }
 // -----------------------------------------------------------------------------

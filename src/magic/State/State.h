@@ -13,6 +13,9 @@
 
 #include <boost/scoped_ptr.hpp>
 
+#include "atlas/field.h"
+#include "atlas/functionspace/StructuredColumns.h"
+
 #include "oops/base/Variables.h"
 #include "oops/util/DateTime.h"
 #include "oops/util/ObjectCounter.h"
@@ -81,6 +84,9 @@ namespace magic {
       boost::shared_ptr<const Geometry> geom_;
       oops::Variables vars_;
       util::DateTime time_;
+      atlas::functionspace::StructuredColumns fs2d_;
+      atlas::functionspace::StructuredColumns fs3d_;
+      atlas::Field fld_;
   };
 // -----------------------------------------------------------------------------
 
