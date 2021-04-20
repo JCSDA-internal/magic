@@ -8,10 +8,10 @@
 #ifndef MAGIC_STATE_STATE_H_
 #define MAGIC_STATE_STATE_H_
 
+#include <memory>
 #include <ostream>
 #include <string>
-
-#include <boost/scoped_ptr.hpp>
+#include <vector>
 
 #include "oops/base/Variables.h"
 #include "oops/util/DateTime.h"
@@ -26,10 +26,10 @@ namespace oops {
   class Variables;
 }
 
-namespace ufo {
-  class GeoVaLs;
-  class Locations;
-}
+// namespace ufo {
+//   class GeoVaLs;
+//   class Locations;
+// }
 
 namespace magic {
   class Geometry;
@@ -46,8 +46,7 @@ namespace magic {
       /// Constructor, destructor
       State(const Geometry &, const oops::Variables &,
             const util::DateTime &);
-      State(const Geometry &, const oops::Variables &,
-            const eckit::Configuration &);
+      State(const Geometry &, const eckit::Configuration &);
       State(const Geometry &, const State &);
       State(const State &);
       virtual ~State();
@@ -56,9 +55,9 @@ namespace magic {
       State & operator=(const State &);
 
       /// Get state values at observation locations
-      void getValues(const ufo::Locations &,
-                     const oops::Variables &,
-                     ufo::GeoVaLs &) const;
+//      void getValues(const ufo::Locations &,
+//                     const oops::Variables &,
+//                     ufo::GeoVaLs &) const;
 
       /// Interactions with Increment
       State & operator+=(const Increment &);
@@ -67,9 +66,18 @@ namespace magic {
       void read(const eckit::Configuration &);
       void write(const eckit::Configuration &) const;
 
-      boost::shared_ptr<const Geometry> geometry() const {return geom_;}
+      /// Access to fields
+      const oops::Variables & variables() const {return vars_;}
+
+      /// Serialize and deserialize
+      size_t serialSize() const;
+      void serialize(std::vector<double> &) const;
+      void deserialize(const std::vector<double> &, size_t &);
+
+      std::shared_ptr<const Geometry> geometry() const {return geom_;}
       const util::DateTime & validTime() const {return time_;}
       util::DateTime & validTime() {return time_;}
+      void updateTime(const util::Duration & dt) {time_ += dt;}
 
       /// Other
       double norm() const;
@@ -78,7 +86,7 @@ namespace magic {
 
    private:
       void print(std::ostream &) const;
-      boost::shared_ptr<const Geometry> geom_;
+      std::shared_ptr<const Geometry> geom_;
       oops::Variables vars_;
       util::DateTime time_;
   };

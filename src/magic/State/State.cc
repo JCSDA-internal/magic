@@ -18,8 +18,8 @@
 #include "oops/util/Duration.h"
 #include "oops/util/Logger.h"
 
-#include "ufo/GeoVaLs.h"
-#include "ufo/Locations.h"
+// #include "ufo/GeoVaLs.h"
+// #include "ufo/Locations.h"
 
 #include "magic/Geometry/Geometry.h"
 #include "magic/Increment/Increment.h"
@@ -38,9 +38,8 @@ namespace magic {
   }
 // -----------------------------------------------------------------------------
   State::State(const Geometry & geom,
-               const oops::Variables & vars,
                const eckit::Configuration & conf)
-    : geom_(new Geometry(geom)), vars_(vars), time_(util::DateTime()) {
+    : geom_(new Geometry(geom)), time_(util::DateTime()) {
     oops::Log::trace() << "State::State created by reading in." << std::endl;
   }
 // -----------------------------------------------------------------------------
@@ -72,13 +71,13 @@ namespace magic {
 // -----------------------------------------------------------------------------
 /// Interpolate to observation location
 // -----------------------------------------------------------------------------
-  void State::getValues(const ufo::Locations & locs,
-                        const oops::Variables & vars,
-                        ufo::GeoVaLs & gom) const {
-    oops::Log::trace() << "State::getValues starting." << std::endl;
-    // fields_->getValues(locs, vars, gom);
-    oops::Log::trace() << "State::getValues done." << std::endl;
-  }
+//  void State::getValues(const ufo::Locations & locs,
+//                        const oops::Variables & vars,
+//                        ufo::GeoVaLs & gom) const {
+//    oops::Log::trace() << "State::getValues starting." << std::endl;
+//    // fields_->getValues(locs, vars, gom);
+//    oops::Log::trace() << "State::getValues done." << std::endl;
+//  }
 // -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
@@ -112,6 +111,44 @@ namespace magic {
   void State::print(std::ostream & os) const {
     oops::Log::info() << std::endl << "  Valid time: " << validTime();
   }
+// -----------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------
+/// Serialize and deserialize
+// -----------------------------------------------------------------------------
+size_t State::serialSize() const {
+  oops::Log::trace() << "State::serialSize starting" << std::endl;
+  size_t nn = 1;
+  int sz = 0;
+  nn += sz;
+  nn += time_.serialSize();
+  return nn;
+  oops::Log::trace() << "State::serialSize done" << std::endl;
+}
+// -----------------------------------------------------------------------------
+void State::serialize(std::vector<double> & vect) const {
+  oops::Log::trace() << "State::serialize starting" << std::endl;
+  int size_fld = this->serialSize() - 3;
+  std::vector<double> v_fld(size_fld, 0);
+
+  vect.insert(vect.end(), v_fld.begin(), v_fld.end());
+
+  // Serialize the date and time
+  vect.push_back(-54321.98765);
+  time_.serialize(vect);
+
+  oops::Log::trace() << "State::serialize done" << std::endl;
+}
+// -----------------------------------------------------------------------------
+void State::deserialize(const std::vector<double> & vect, size_t & index) {
+  oops::Log::trace() << "State::deserialize starting" << std::endl;
+
+  ASSERT(vect.at(index) == -54321.98765);
+  ++index;
+
+  time_.deserialize(vect, index);
+  oops::Log::trace() << "State::deserialize done" << std::endl;
+}
 // -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------

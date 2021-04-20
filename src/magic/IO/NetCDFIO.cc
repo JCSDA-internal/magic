@@ -14,7 +14,7 @@
 
 #include <boost/math/special_functions/fpclassify.hpp>
 
-#include "oops/parallel/mpi/mpi.h"
+#include "oops/mpi/mpi.h"
 #include "oops/util/abor1_cpp.h"
 #include "oops/util/DateTime.h"
 #include "oops/util/Duration.h"
