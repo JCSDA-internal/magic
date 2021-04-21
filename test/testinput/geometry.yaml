@@ -1,4 +1,4 @@
-Geometry:
+geometry:
   type   : "structured"
   xspace : { type :"linear",   N : 384, start : 0,  end :  360, endpoint:false }
   yspace : { type :"gaussian", N : 192, start : 90, end : -90 }

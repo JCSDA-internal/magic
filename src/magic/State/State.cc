@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2019-2019.
+ * (C) Copyright 2019-2021 NOAA/NWS/NCEP/EMC.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -18,9 +18,6 @@
 #include "oops/util/Duration.h"
 #include "oops/util/Logger.h"
 
-#include "ufo/GeoVaLs.h"
-#include "ufo/Locations.h"
-
 #include "magic/Geometry/Geometry.h"
 #include "magic/Increment/Increment.h"
 #include "magic/State/State.h"
@@ -35,14 +32,14 @@ namespace magic {
                const util::DateTime & time)
     : geom_(new Geometry(geom)), vars_(vars), time_(time) {
     fs2d_ = geom_->getFunctionSpace();
-    fld_ = fs2d_.createField<double>(atlas::option::name("psfc") | atlas::option::levels(false));
+    fld_ = fs2d_.createField<double>(atlas::option::name("psfc") |
+                                     atlas::option::levels(false));
     oops::Log::trace() << "State::State created." << std::endl;
   }
 // -----------------------------------------------------------------------------
   State::State(const Geometry & geom,
-               const oops::Variables & vars,
                const eckit::Configuration & conf)
-    : geom_(new Geometry(geom)), vars_(vars), time_(util::DateTime()) {
+    : geom_(new Geometry(geom)), time_(util::DateTime()) {
     oops::Log::trace() << "State::State created by reading in." << std::endl;
   }
 // -----------------------------------------------------------------------------
@@ -68,18 +65,6 @@ namespace magic {
   State & State::operator=(const State & rhs) {
     time_ = rhs.time_;
     return *this;
-  }
-// -----------------------------------------------------------------------------
-
-// -----------------------------------------------------------------------------
-/// Interpolate to observation location
-// -----------------------------------------------------------------------------
-  void State::getValues(const ufo::Locations & locs,
-                        const oops::Variables & vars,
-                        ufo::GeoVaLs & gom) const {
-    oops::Log::trace() << "State::getValues starting." << std::endl;
-    // fields_->getValues(locs, vars, gom);
-    oops::Log::trace() << "State::getValues done." << std::endl;
   }
 // -----------------------------------------------------------------------------
 
@@ -114,6 +99,44 @@ namespace magic {
   void State::print(std::ostream & os) const {
     oops::Log::info() << std::endl << "  Valid time: " << validTime();
   }
+// -----------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------
+/// Serialize and deserialize
+// -----------------------------------------------------------------------------
+size_t State::serialSize() const {
+  oops::Log::trace() << "State::serialSize starting" << std::endl;
+  size_t nn = 1;
+  int sz = 0;
+  nn += sz;
+  nn += time_.serialSize();
+  return nn;
+  oops::Log::trace() << "State::serialSize done" << std::endl;
+}
+// -----------------------------------------------------------------------------
+void State::serialize(std::vector<double> & vect) const {
+  oops::Log::trace() << "State::serialize starting" << std::endl;
+  int size_fld = this->serialSize() - 3;
+  std::vector<double> v_fld(size_fld, 0);
+
+  vect.insert(vect.end(), v_fld.begin(), v_fld.end());
+
+  // Serialize the date and time
+  vect.push_back(-54321.98765);
+  time_.serialize(vect);
+
+  oops::Log::trace() << "State::serialize done" << std::endl;
+}
+// -----------------------------------------------------------------------------
+void State::deserialize(const std::vector<double> & vect, size_t & index) {
+  oops::Log::trace() << "State::deserialize starting" << std::endl;
+
+  ASSERT(vect.at(index) == -54321.98765);
+  ++index;
+
+  time_.deserialize(vect, index);
+  oops::Log::trace() << "State::deserialize done" << std::endl;
+}
 // -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------

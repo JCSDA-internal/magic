@@ -1,4 +1,4 @@
-# (C) Copyright 2019-2019.
+# (C) Copyright 2019-2021 NOAA/NWS/NCEP/EMC.
 #
 # This software is licensed under the terms of the Apache Licence Version 2.0
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -9,115 +9,58 @@
 
 cmake_minimum_required( VERSION 3.3.2 FATAL_ERROR )
 
-project( magic C CXX Fortran)
+project( magic VERSION 0.0.1 LANGUAGES C CXX Fortran)
+
+find_package( ecbuild 3.5 REQUIRED )
+
+include( ecbuild_system NO_POLICY_SCOPE )
+ecbuild_declare_project()
 
 list( APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake )
 
+option( ENABLE_MKL "Use MKL for LAPACK implementation (if available)" ON )
+
 set( ECBUILD_DEFAULT_BUILD_TYPE Release )
-set( ENABLE_OS_TESTS           OFF CACHE BOOL "Disable OS tests" FORCE )
-set( ENABLE_LARGE_FILE_SUPPORT OFF CACHE BOOL "Disable testing of large file support" FORCE )
-set( ENABLE_MPI ON CACHE BOOL "Compile with MPI" )
 
-include( ecbuild_system NO_POLICY_SCOPE )
-
-ecbuild_requires_macro_version( 2.5 )
-
-################################################################################
-# Project
-################################################################################
-
-ecbuild_declare_project()
-
-ecbuild_enable_fortran( REQUIRED )
-ecbuild_add_cxx11_flags()
-
-set( MAGIC_LINKER_LANGUAGE CXX )
-
-include( magic_extra_macros )
+include( ${PROJECT_NAME}_compiler_flags )
+include( ${PROJECT_NAME}_extra_macros )
+include( GNUInstallDirs )
 
 ################################################################################
 # Dependencies
 ################################################################################
 
-# LAPACK
-ecbuild_add_option( FEATURE LAPACK
-                    DESCRIPTION "Linear Algebra PACKage"
-                    REQUIRED_PACKAGES "LAPACK REQUIRED" )
-if (NOT HAVE_LAPACK)
-  ecbuild_error("LAPACK_LIBRARIES not defined")
+if( ENABLE_MKL )
+    find_package( MKL )
+endif()
+if( MKL_FOUND )
+    set( LAPACK_LIBRARIES ${MKL_LIBRARIES} )
+else()
+    find_package( LAPACK REQUIRED )
 endif()
 
-# MPI
-ecbuild_find_mpi( COMPONENTS CXX Fortran REQUIRED )
-ecbuild_include_mpi()
-link_libraries(${MPI_CXX_LIBRARIES} ${MPI_Fortran_LIBRARIES})
-
-# NetCDF
-find_package( NetCDF REQUIRED COMPONENTS CXX Fortran )
-include_directories( ${NETCDF_INCLUDE_DIRS} )
-
-# Boost
-set( Boost_MINIMUM_VERSION "1.47" )
-include_directories( ${Boost_INCLUDE_DIR} )
-
-# eckit
-ecbuild_use_package( PROJECT eckit VERSION 0.18.0 REQUIRED )
-include_directories( ${ECKIT_INCLUDE_DIRS} )
-
-# fckit
-ecbuild_use_package( PROJECT fckit VERSION 0.4.1 REQUIRED )
-include_directories( ${FCKIT_INCLUDE_DIRS} )
-
-# atlas
-ecbuild_use_package( PROJECT atlas VERSION 0.1.0 REQUIRED )
-include_directories( ${ATLAS_INCLUDE_DIRS} )
-
-# saber
-ecbuild_use_package( PROJECT saber VERSION 0.0.1 REQUIRED )
-include_directories( ${SABER_INCLUDE_DIRS} )
-
-# oops
-ecbuild_use_package( PROJECT oops VERSION 0.0.1 REQUIRED )
-include_directories( ${OOPS_INCLUDE_DIRS} )
-
-# ioda
-ecbuild_use_package( PROJECT ioda VERSION 0.0.1 REQUIRED )
-include_directories( ${IODA_INCLUDE_DIRS} )
-
-# ufo
-ecbuild_use_package( PROJECT ufo VERSION 0.0.1 REQUIRED )
-include_directories( ${UFO_INCLUDE_DIRS} )
-
-################################################################################
-# Definitions
-################################################################################
-
-################################################################################
-# Export package info
-################################################################################
-
-list( APPEND MAGIC_TPLS LAPACK MPI NetCDF eckit fckit )
-
-set( MAGIC_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src
-                       ${CMAKE_CURRENT_BINARY_DIR}/src
-                       ${CMAKE_Fortran_MODULE_DIRECTORY} )
-set( MAGIC_LIBRARIES magic )
-
-get_directory_property( MAGIC_DEFINITIONS COMPILE_DEFINITIONS )
-
-foreach( _tpl ${MAGIC_TPLS} )
-  string( TOUPPER ${_tpl} TPL )
-  list( APPEND MAGIC_EXTRA_DEFINITIONS   ${${TPL}_DEFINITIONS}  ${${TPL}_TPL_DEFINITIONS}  )
-  list( APPEND MAGIC_EXTRA_INCLUDE_DIRS  ${${TPL}_INCLUDE_DIRS} ${${TPL}_TPL_INCLUDE_DIRS} )
-  list( APPEND MAGIC_EXTRA_LIBRARIES     ${${TPL}_LIBRARIES}    ${${TPL}_TPL_LIBRARIES}    )
-endforeach()
+find_package( Eigen3 REQUIRED NO_MODULE HINTS
+    $ENV{Eigen3_ROOT} $ENV{EIGEN3_ROOT} $ENV{Eigen_ROOT} $ENV{EIGEN_ROOT}
+    $ENV{Eigen3_PATH} $ENV{EIGEN3_PATH} $ENV{Eigen_PATH} $ENV{EIGEN_PATH})
+find_package( OpenMP COMPONENTS CXX Fortran )
+find_package( MPI REQUIRED COMPONENTS C CXX Fortran )
+find_package( NetCDF REQUIRED COMPONENTS C CXX Fortran )
+find_package( Boost 1.64.0 REQUIRED)
+find_package( eckit 1.11.6 REQUIRED COMPONENTS MPI )
+find_package( fckit 0.7.0 REQUIRED )
+if(OpenMP_FOUND)
+    find_package( atlas 0.20.2 REQUIRED COMPONENTS OMP OMP_Fortran )
+else()
+    find_package( atlas 0.20.2 REQUIRED )
+endif()
+find_package( saber 0.0.1 REQUIRED )
+find_package( oops 0.0.1 REQUIRED )
+find_package( ioda 0.0.1 REQUIRED )
+find_package( ufo  0.0.1 REQUIRED )
 
 ################################################################################
 # Sources
 ################################################################################
-
-include( magic_compiler_flags )
-include_directories( ${MAGIC_INCLUDE_DIRS} ${MAGIC_EXTRA_INCLUDE_DIRS} )
 
 add_subdirectory( src )
 add_subdirectory( test )
@@ -134,7 +77,7 @@ endif()
 ################################################################################
 
 # prepares a tar.gz of the sources and/or binaries
-ecbuild_install_project( NAME magic )
+ecbuild_install_project( NAME ${PROJECT_NAME} )
 
 # print the summary of the configuration
 ecbuild_print_summary()

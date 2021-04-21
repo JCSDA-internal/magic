@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2019-2019.
+ * (C) Copyright 2019-2021 NOAA/NWS/NCEP/EMC.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -14,7 +14,7 @@
 
 #include <boost/math/special_functions/fpclassify.hpp>
 
-#include "oops/parallel/mpi/mpi.h"
+#include "oops/mpi/mpi.h"
 #include "oops/util/abor1_cpp.h"
 #include "oops/util/DateTime.h"
 #include "oops/util/Duration.h"

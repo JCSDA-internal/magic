@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2019-2019.
+ * (C) Copyright 2019-2021 NOAA/NWS/NCEP/EMC.
  *
  * This software is licensed under the terms of the Apache Licence Version 2.0
  * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
@@ -8,14 +8,11 @@
 #ifndef MAGIC_INCREMENT_INCREMENT_H_
 #define MAGIC_INCREMENT_INCREMENT_H_
 
+#include <memory>
 #include <ostream>
 #include <string>
 #include <vector>
 
-#include <boost/scoped_ptr.hpp>
-#include <boost/shared_ptr.hpp>
-
-#include "oops/base/GeneralizedDepartures.h"
 #include "oops/base/Variables.h"
 #include "oops/util/DateTime.h"
 #include "oops/util/dot_product.h"
@@ -30,11 +27,6 @@ namespace eckit {
   class Configuration;
 }
 
-namespace ufo {
-  class GeoVaLs;
-  class Locations;
-}
-
 namespace oops {
   class Variables;
 }
@@ -46,8 +38,7 @@ namespace magic {
 // -----------------------------------------------------------------------------
 /// Increment handles the increment to the model state
 
-class Increment : public oops::GeneralizedDepartures,
-                  public util::Printable,
+class Increment : public util::Printable,
                   private util::ObjectCounter<Increment> {
  public:
   static const std::string classname() {return "magic::Increment";}
@@ -78,12 +69,17 @@ class Increment : public oops::GeneralizedDepartures,
   void write(const eckit::Configuration &) const;
   double norm() const;
 
+/// Serialize and deserialize
+  size_t serialSize() const;
+  void serialize(std::vector<double> &) const;
+  void deserialize(const std::vector<double> &, size_t &);
+
 /// Other
   void accumul(const double &, const State &);
   void jnormgrad(const State &, const eckit::Configuration &);
 
 // Utilities
-  boost::shared_ptr<const Geometry> geometry() const {return geom_;}
+  std::shared_ptr<const Geometry> geometry() const {return geom_;}
 
   void updateTime(const util::Duration & dt) {time_ += dt;}
   const util::DateTime & time() const {return time_;}
@@ -98,7 +94,7 @@ class Increment : public oops::GeneralizedDepartures,
  private:
   void print(std::ostream &) const;
   F90inc keyInc_;
-  boost::shared_ptr<const Geometry> geom_;
+  std::shared_ptr<const Geometry> geom_;
   oops::Variables vars_;
   util::DateTime time_;
 };
