@@ -13,14 +13,12 @@
 #include <vector>
 
 #include "eckit/config/Configuration.h"
-#include "oops/generic/UnstructuredGrid.h"
 #include "oops/base/Variables.h"
 #include "oops/util/DateTime.h"
 #include "oops/util/Logger.h"
 
 #include "magic/Fields/Fields.h"
 #include "magic/Geometry/Geometry.h"
-//#include "magic/Fields/FieldsFortran.h"
 
 // -----------------------------------------------------------------------------
 namespace magic {
@@ -139,23 +137,6 @@ namespace magic {
     // magic_field_diff_incr_f90(keyFlds_, x1.keyFlds_, x2.keyFlds_);
   }
 // -----------------------------------------------------------------------------
-  void Fields::ug_coord(oops::UnstructuredGrid & ug) const {
-    // magic_field_ug_coord_f90(keyFlds_, geom_->toFortran(),
-    //                        ug.toFortran());
-  }
-// -----------------------------------------------------------------------------
-  void Fields::field_to_ug(oops::UnstructuredGrid & ug,
-                           const int & its) const {
-    // magic_field_field_to_ug_f90(keyFlds_, geom_->toFortran(),
-    //                           ug.toFortran(), its);
-  }
-// -----------------------------------------------------------------------------
-  void Fields::field_from_ug(const oops::UnstructuredGrid & ug,
-                             const int & its) {
-    // magic_field_field_from_ug_f90(keyFlds_, geom_->toFortran(),
-    //                             ug.toFortran(), its);
-  }
-// -----------------------------------------------------------------------------
   void Fields::read(const eckit::Configuration & config) {
     // const eckit::Configuration * conf = &config;
     // util::DateTime * dtp = &time_;
@@ -188,14 +169,6 @@ namespace magic {
          << "   mean=" <<  std::fixed << std::setw(12) <<
                            std::right << zstat[3*jj+2];
     }
-  }
-// -----------------------------------------------------------------------------
-  bool Fields::isForModel(bool nonlinear) const {
-    int nf = -1;
-    // magic_field_sizes_f90(keyFlds_, nf);
-    bool ok = (nf >= 2);    // <---- HARD CODED STUFF ... NEED TO CHANGE
-    if (nonlinear) ok = ok;  // && (nb == 2);
-    return ok;
   }
 // -----------------------------------------------------------------------------
 }  // namespace magic

@@ -13,7 +13,7 @@
 
 #include "oops/util/Logger.h"
 
-#include "magic/Geometry/GeometryFortran.h"
+// #include "magic/Geometry/GeometryFortran.h"
 #include "magic/Geometry/Geometry.h"
 
 // -----------------------------------------------------------------------------

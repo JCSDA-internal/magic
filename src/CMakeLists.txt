@@ -3,21 +3,19 @@
 # This software is licensed under the terms of the Apache Licence Version 2.0
 # which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
 
-#add_subdirectory( magic )
-
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 
 list( APPEND magic_src_files
 # Geometry
 magic/Geometry/Geometry.cc
 magic/Geometry/Geometry.h
-magic/Geometry/GeometryFortran.h
-magic/Geometry/magic_geom.interface.F90
-magic/Geometry/magic_geom_mod.f90
+#magic/Geometry/GeometryFortran.h
+#magic/Geometry/magic_geom.interface.F90
+#magic/Geometry/magic_geom_mod.f90
 
 # Fields
-#magic/Fields/Fields.cc
-#magic/Fields/Fields.h
+magic/Fields/Fields.cc
+magic/Fields/Fields.h
 #magic/Fields/FieldsFortran.h
 
 # State

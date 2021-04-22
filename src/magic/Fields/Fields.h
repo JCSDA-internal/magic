@@ -8,6 +8,7 @@
 #ifndef MAGIC_FIELDS_FIELDS_H_
 #define MAGIC_FIELDS_FIELDS_H_
 
+#include <memory>
 #include <ostream>
 #include <string>
 #include "oops/base/Variables.h"
@@ -21,10 +22,6 @@
 // Forward declarations
 namespace eckit {
   class Configuration;
-}
-
-namespace oops {
-  class UnstructuredGrid;
 }
 
 namespace magic {
@@ -68,11 +65,6 @@ namespace magic {
       void changeResolution(const Fields &);
       void add(const Fields &);
       void diff(const Fields &, const Fields &);
-
-      // Unstructured grid
-      void ug_coord(oops::UnstructuredGrid &) const;
-      void field_to_ug(oops::UnstructuredGrid &, const int &) const;
-      void field_from_ug(const oops::UnstructuredGrid &, const int &);
 
       // Utilities
       void read(const eckit::Configuration &);
