@@ -55,8 +55,8 @@ else()
 endif()
 find_package( saber 0.0.1 REQUIRED )
 find_package( oops 0.0.1 REQUIRED )
-find_package( ioda 0.0.1 REQUIRED )
-find_package( ufo  0.0.1 REQUIRED )
+#find_package( ioda 0.0.1 REQUIRED )
+#find_package( ufo  0.0.1 REQUIRED )
 
 ################################################################################
 # Sources

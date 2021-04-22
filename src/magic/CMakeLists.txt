@@ -9,13 +9,13 @@ list( APPEND magic_src_files
 # Geometry
 Geometry/Geometry.cc
 Geometry/Geometry.h
-Geometry/GeometryFortran.h
-Geometry/magic_geom.interface.F90
-Geometry/magic_geom_mod.f90
+#Geometry/GeometryFortran.h
+#Geometry/magic_geom.interface.F90
+#Geometry/magic_geom_mod.f90
 
 # Fields
-#Fields/Fields.cc
-#Fields/Fields.h
+Fields/Fields.cc
+Fields/Fields.h
 #Fields/FieldsFortran.h
 
 # State

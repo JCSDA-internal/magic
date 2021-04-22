@@ -18,6 +18,7 @@
 #include "oops/util/Duration.h"
 #include "oops/util/Logger.h"
 
+#include "magic/Fields/Fields.h"
 #include "magic/Geometry/Geometry.h"
 #include "magic/Increment/Increment.h"
 #include "magic/State/State.h"
@@ -30,7 +31,8 @@ namespace magic {
   State::State(const Geometry & geom,
                const oops::Variables & vars,
                const util::DateTime & time)
-    : geom_(new Geometry(geom)), vars_(vars), time_(time) {
+    : geom_(new Geometry(geom)), vars_(vars), time_(time),
+      fields_(new Fields(geom, vars, time)) {
     fs2d_ = geom_->getFunctionSpace();
     fld_ = fs2d_.createField<double>(atlas::option::name("psfc") |
                                      atlas::option::levels(false));
@@ -40,6 +42,7 @@ namespace magic {
   State::State(const Geometry & geom,
                const eckit::Configuration & conf)
     : geom_(new Geometry(geom)), time_(util::DateTime()) {
+    fields_->read(conf);
     oops::Log::trace() << "State::State created by reading in." << std::endl;
   }
 // -----------------------------------------------------------------------------
@@ -86,7 +89,7 @@ namespace magic {
 // -----------------------------------------------------------------------------
   void State::read(const eckit::Configuration & conf) {
     oops::Log::trace() << "State::State read started." << std::endl;
-    // fields_->read(conf);
+    fields_->read(conf);
     oops::Log::trace() << "State::State read done." << std::endl;
   }
 // -----------------------------------------------------------------------------

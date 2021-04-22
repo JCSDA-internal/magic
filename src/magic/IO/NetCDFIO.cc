@@ -79,7 +79,7 @@ namespace magic {
 // -----------------------------------------------------------------------------
   NetCDFIO::~NetCDFIO() {
     oops::Log::trace() << __func__ << " fname_: " << fname_ << std::endl;
-    ncfile_->close();
+    // The netCDF file is automatically closed by the netCDF::NcFile destructor
   }
 // -----------------------------------------------------------------------------
   void NetCDFIO::CheckNcCall(int RetCode, const std::string & ErrorMsg) {

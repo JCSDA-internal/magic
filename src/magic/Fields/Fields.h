@@ -10,7 +10,6 @@
 
 #include <ostream>
 #include <string>
-#include <boost/shared_ptr.hpp>
 #include "oops/base/Variables.h"
 #include "oops/util/DateTime.h"
 #include "oops/util/Duration.h"
@@ -26,11 +25,6 @@ namespace eckit {
 
 namespace oops {
   class UnstructuredGrid;
-}
-
-namespace ufo {
-  class GeoVaLs;
-  class Locations;
 }
 
 namespace magic {
@@ -70,10 +64,6 @@ namespace magic {
       void schur_product_with(const Fields &);
       void random();
 
-      // Interpolate to given location
-      void getValues(const ufo::Locations &, const oops::Variables &,
-                           ufo::GeoVaLs &) const;
-
       // Interpolate full fields
       void changeResolution(const Fields &);
       void add(const Fields &);
@@ -88,17 +78,14 @@ namespace magic {
       void read(const eckit::Configuration &);
       void write(const eckit::Configuration &) const;
       double norm() const;
-      boost::shared_ptr<const Geometry> geometry() const {return geom_;}
+      std::shared_ptr<const Geometry> geometry() const {return geom_;}
       const util::DateTime & time() const {return time_;}
       util::DateTime & time() {return time_;}
-      int & toFortran() {return keyFlds_;}
-      const int & toFortran() const {return keyFlds_;}
-      bool isForModel(const bool) const;
 
    private:
       void print(std::ostream &) const;
       F90flds keyFlds_;
-      boost::shared_ptr<const Geometry> geom_;
+      std::shared_ptr<const Geometry> geom_;
       oops::Variables vars_;
       util::DateTime time_;
   };

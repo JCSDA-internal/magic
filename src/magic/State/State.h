@@ -21,6 +21,8 @@
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 
+#include "magic/Fields/Fields.h"
+
 namespace eckit {
   class Configuration;
 }
@@ -85,6 +87,7 @@ namespace magic {
       atlas::functionspace::StructuredColumns fs2d_;
       atlas::functionspace::StructuredColumns fs3d_;
       atlas::Field fld_;
+      std::unique_ptr<Fields> fields_;
   };
 // -----------------------------------------------------------------------------
 

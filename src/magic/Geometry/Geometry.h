@@ -27,7 +27,7 @@
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 
-#include "magic/Fortran.h"
+// #include "magic/Fortran.h"
 
 // Forward declarations
 namespace eckit {
