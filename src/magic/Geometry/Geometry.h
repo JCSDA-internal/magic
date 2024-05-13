@@ -27,7 +27,7 @@
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 
-// #include "magic/Fortran.h"
+#include "magic/Fortran.h"
 
 // Forward declarations
 namespace eckit {
@@ -56,9 +56,8 @@ namespace magic {
      const atlas::Vertical & getVerticalCoord() const {return vcoord_;}
      const atlas::Mesh & getMesh() const {return mesh_;}
      const eckit::mpi::Comm & getComm() const {return comm_;}
-     atlas::functionspace::StructuredColumns getFunctionSpace() const;
-     // int& toFortran() {return keyGeom_;}
-     // const int& toFortran() const {return keyGeom_;}
+     int& toFortran() {return keyGeom_;}
+     const int& toFortran() const {return keyGeom_;}
 
    private:
      Geometry & operator=(const Geometry &);
@@ -71,8 +70,8 @@ namespace magic {
      int nLevs_;
      std::vector<double> ak_, bk_;
      atlas::Vertical vcoord_;
-     // boost::shared_ptr<const Geometry> geom_;
-     // int keyGeom_;
+     boost::shared_ptr<const Geometry> geom_;
+     int keyGeom_;
   };
 // -----------------------------------------------------------------------------
 

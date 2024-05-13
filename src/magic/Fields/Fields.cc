@@ -6,19 +6,22 @@
  */
 
 #include <cmath>
-#include <iomanip>
 #include <map>
-#include <memory>
 #include <string>
 #include <vector>
+#include <iomanip>
 
 #include "eckit/config/Configuration.h"
+#include "oops/generic/UnstructuredGrid.h"
 #include "oops/base/Variables.h"
 #include "oops/util/DateTime.h"
 #include "oops/util/Logger.h"
+#include "ufo/GeoVaLs.h"
+#include "ufo/Locations.h"
 
-#include "magic/Fields/Fields.h"
 #include "magic/Geometry/Geometry.h"
+#include "magic/Fields/FieldsFortran.h"
+#include "magic/Fields/Fields.h"
 
 // -----------------------------------------------------------------------------
 namespace magic {
@@ -29,22 +32,6 @@ namespace magic {
     geom_(new Geometry(geom)), vars_(vars), time_(time) {
     // const eckit::Configuration * conf = &vars_.toFortran();
     // magic_field_create_f90(keyFlds_, geom_->toFortran(), &conf);
-  }
-// -----------------------------------------------------------------------------
-  Fields::Fields(const Fields & other, const Geometry & geom)
-    : geom_(new Geometry(geom)), vars_(other.vars_), time_(other.time_)
-  {
-    // const eckit::Configuration * conf = &vars_.toFortran();
-    // magic_field_create_f90(keyFlds_, geom_->toFortran(), &conf);
-    // magic_field_change_resol_f90(keyFlds_, other.keyFlds_);
-  }
-// -----------------------------------------------------------------------------
-  Fields::Fields(const Fields & other, const oops::Variables & vars)
-    : geom_(other.geom_), vars_(vars), time_(other.time_)
-  {
-    // const eckit::Configuration * conf = &vars_.toFortran();
-    // magic_field_create_f90(keyFlds_, geom_->toFortran(), &conf);
-    // magic_field_copy_f90(keyFlds_, other.keyFlds_);
   }
 // -----------------------------------------------------------------------------
   Fields::Fields(const Fields & other, const bool copy)
@@ -61,6 +48,22 @@ namespace magic {
 // -----------------------------------------------------------------------------
   Fields::Fields(const Fields & other)
     : geom_(other.geom_), vars_(other.vars_), time_(other.time_)
+  {
+    // const eckit::Configuration * conf = &vars_.toFortran();
+    // magic_field_create_f90(keyFlds_, geom_->toFortran(), &conf);
+    // magic_field_copy_f90(keyFlds_, other.keyFlds_);
+  }
+// -----------------------------------------------------------------------------
+  Fields::Fields(const Fields & other, const Geometry & geom)
+    : geom_(new Geometry(geom)), vars_(other.vars_), time_(other.time_)
+  {
+    // const eckit::Configuration * conf = &vars_.toFortran();
+    // magic_field_create_f90(keyFlds_, geom_->toFortran(), &conf);
+    // magic_field_change_resol_f90(keyFlds_, other.keyFlds_);
+  }
+// -----------------------------------------------------------------------------
+  Fields::Fields(const Fields & other, const oops::Variables & vars)
+    : geom_(other.geom_), vars_(vars), time_(other.time_)
   {
     // const eckit::Configuration * conf = &vars_.toFortran();
     // magic_field_create_f90(keyFlds_, geom_->toFortran(), &conf);
@@ -125,6 +128,15 @@ namespace magic {
     // magic_field_random_f90(keyFlds_);
   }
 // -----------------------------------------------------------------------------
+  void Fields::getValues(const ufo::Locations & locs,
+                         const oops::Variables & vars,
+                         ufo::GeoVaLs & gom) const {
+    // const eckit::Configuration * conf = &vars.toFortran();
+    // magic_field_interp_nl_f90(keyFlds_,  geom_->toFortran(),
+    //                         locs.toFortran(), &conf,
+    //                         gom.toFortran());
+  }
+// -----------------------------------------------------------------------------
   void Fields::changeResolution(const Fields & other) {
     // magic_field_change_resol_f90(keyFlds_, other.keyFlds_);
   }
@@ -135,6 +147,23 @@ namespace magic {
 // -----------------------------------------------------------------------------
   void Fields::diff(const Fields & x1, const Fields & x2) {
     // magic_field_diff_incr_f90(keyFlds_, x1.keyFlds_, x2.keyFlds_);
+  }
+// -----------------------------------------------------------------------------
+  void Fields::ug_coord(oops::UnstructuredGrid & ug) const {
+    // magic_field_ug_coord_f90(keyFlds_, geom_->toFortran(),
+    //                        ug.toFortran());
+  }
+// -----------------------------------------------------------------------------
+  void Fields::field_to_ug(oops::UnstructuredGrid & ug,
+                           const int & its) const {
+    // magic_field_field_to_ug_f90(keyFlds_, geom_->toFortran(),
+    //                           ug.toFortran(), its);
+  }
+// -----------------------------------------------------------------------------
+  void Fields::field_from_ug(const oops::UnstructuredGrid & ug,
+                             const int & its) {
+    // magic_field_field_from_ug_f90(keyFlds_, geom_->toFortran(),
+    //                             ug.toFortran(), its);
   }
 // -----------------------------------------------------------------------------
   void Fields::read(const eckit::Configuration & config) {
@@ -169,6 +198,14 @@ namespace magic {
          << "   mean=" <<  std::fixed << std::setw(12) <<
                            std::right << zstat[3*jj+2];
     }
+  }
+// -----------------------------------------------------------------------------
+  bool Fields::isForModel(bool nonlinear) const {
+    int nf = -1;
+    // magic_field_sizes_f90(keyFlds_, nf);
+    bool ok = (nf >= 2);    // <---- HARD CODED STUFF ... NEED TO CHANGE
+    if (nonlinear) ok = ok;  // && (nb == 2);
+    return ok;
   }
 // -----------------------------------------------------------------------------
 }  // namespace magic

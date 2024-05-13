@@ -17,6 +17,9 @@
 #include "oops/util/Duration.h"
 #include "oops/util/Logger.h"
 
+//  #include "ufo/GeoVaLs.h"
+//  #include "ufo/Locations.h"
+
 #include "magic/Geometry/Geometry.h"
 #include "magic/Increment/Increment.h"
 #include "magic/State/State.h"

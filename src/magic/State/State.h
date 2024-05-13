@@ -13,15 +13,10 @@
 #include <string>
 #include <vector>
 
-#include "atlas/field.h"
-#include "atlas/functionspace/StructuredColumns.h"
-
 #include "oops/base/Variables.h"
 #include "oops/util/DateTime.h"
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
-
-#include "magic/Fields/Fields.h"
 
 namespace eckit {
   class Configuration;
@@ -30,6 +25,11 @@ namespace eckit {
 namespace oops {
   class Variables;
 }
+
+// namespace ufo {
+//   class GeoVaLs;
+//   class Locations;
+// }
 
 namespace magic {
   class Geometry;
@@ -53,6 +53,11 @@ namespace magic {
 
       /// Basic operators
       State & operator=(const State &);
+
+      /// Get state values at observation locations
+//      void getValues(const ufo::Locations &,
+//                     const oops::Variables &,
+//                     ufo::GeoVaLs &) const;
 
       /// Interactions with Increment
       State & operator+=(const Increment &);
@@ -84,10 +89,6 @@ namespace magic {
       std::shared_ptr<const Geometry> geom_;
       oops::Variables vars_;
       util::DateTime time_;
-      atlas::functionspace::StructuredColumns fs2d_;
-      atlas::functionspace::StructuredColumns fs3d_;
-      atlas::Field fld_;
-      std::unique_ptr<Fields> fields_;
   };
 // -----------------------------------------------------------------------------
 

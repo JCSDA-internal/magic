@@ -8,8 +8,8 @@
 #ifndef MAGIC_INCREMENT_INCREMENT_H_
 #define MAGIC_INCREMENT_INCREMENT_H_
 
-#include <memory>
 #include <ostream>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -26,6 +26,11 @@
 namespace eckit {
   class Configuration;
 }
+
+// namespace ufo {
+//   class GeoVaLs;
+//   class Locations;
+// }
 
 namespace oops {
   class Variables;
