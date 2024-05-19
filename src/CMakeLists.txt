@@ -60,7 +60,7 @@ target_link_libraries( ${PROJECT_NAME} PUBLIC eckit eckit_mpi )
 target_link_libraries( ${PROJECT_NAME} PUBLIC fckit )
 target_link_libraries( ${PROJECT_NAME} PUBLIC atlas atlas_f )
 target_link_libraries( ${PROJECT_NAME} PUBLIC oops )
-target_link_libraries( ${PROJECT_NAME} PUBLIC ufo )
+#target_link_libraries( ${PROJECT_NAME} PUBLIC ufo )
 
 target_include_directories( ${PROJECT_NAME} INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
                                                       $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)

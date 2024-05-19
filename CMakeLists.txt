@@ -19,15 +19,15 @@ include( GNUInstallDirs )
 # Dependencies
 ################################################################################
 find_package( NetCDF REQUIRED COMPONENTS C CXX Fortran )
-find_package( gsl-lite REQUIRED HINTS $ENV{gsl_list_DIR})
+#find_package( gsl-lite REQUIRED HINTS $ENV{gsl_list_DIR})
 find_package( eckit  1.24.4   REQUIRED)
 find_package( fckit  0.11.0   REQUIRED)
 find_package( atlas  0.35.0   REQUIRED)
 find_package( oops   1.10.0   REQUIRED)
-find_package( vader  1.7.0    REQUIRED)
-find_package( saber  1.10.0   REQUIRED)
-find_package( ioda   2.9.0    REQUIRED)
-find_package( ufo    1.10.0   REQUIRED)
+#find_package( vader  1.7.0    REQUIRED)
+#find_package( saber  1.10.0   REQUIRED)
+#find_package( ioda   2.9.0    REQUIRED)
+#find_package( ufo    1.10.0   REQUIRED)
 
 ################################################################################
 # Sources
