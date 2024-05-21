@@ -1,12 +1,4 @@
-/*
- * (C) Copyright 2019-2021 NOAA/NWS/NCEP/EMC.
- *
- * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
- */
-
-#ifndef MAGIC_GEOMETRY_GEOMETRY_H_
-#define MAGIC_GEOMETRY_GEOMETRY_H_
+#pragma once
 
 #include <ostream>
 #include <string>
@@ -30,8 +22,6 @@
 
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
-
-#include "magic/Fortran.h"
 
 // Forward declarations
 namespace eckit {
@@ -75,8 +65,6 @@ namespace magic {
     const atlas::Vertical & getVerticalCoord() const {return vcoord_;}
     const atlas::Mesh & getMesh() const {return mesh_;}
     const eckit::mpi::Comm & getComm() const {return comm_;}
-     int& toFortran() {return keyGeom_;}
-     const int& toFortran() const {return keyGeom_;}
 
    private:
      Geometry & operator=(const Geometry &);
@@ -92,10 +80,7 @@ namespace magic {
      std::vector<double> ak_, bk_;
      atlas::Vertical vcoord_;
      boost::shared_ptr<const Geometry> geom_;
-     int keyGeom_;
   };
 // -----------------------------------------------------------------------------
 
 }  // namespace magic
-
-#endif  // MAGIC_GEOMETRY_GEOMETRY_H_

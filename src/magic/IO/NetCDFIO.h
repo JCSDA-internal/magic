@@ -1,12 +1,4 @@
-/*
- * (C) Copyright 2019-2021 NOAA/NWS/NCEP/EMC.
- *
- * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
- */
-
-#ifndef MAGIC_IO_NETCDFIO_H_
-#define MAGIC_IO_NETCDFIO_H_
+#pragma once
 
 #include <netcdf>
 #include <map>
@@ -69,5 +61,3 @@ class NetCDFIO : private util::ObjectCounter<NetCDFIO> {
 // -----------------------------------------------------------------------------
 
 }  // namespace magic
-
-#endif  // MAGIC_IO_NETCDFIO_H_

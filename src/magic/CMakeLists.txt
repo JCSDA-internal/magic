@@ -2,16 +2,12 @@ include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 
 list( APPEND magic_src_files
 Traits.h
-Fortran.h
 )
 
 list( APPEND magic_src_files
 # Geometry
 Geometry/Geometry.cc
 Geometry/Geometry.h
-Geometry/GeometryFortran.h
-Geometry/magic_geom.interface.F90
-Geometry/magic_geom_mod.f90
 
 # Fields
 #Fields/Fields.cc

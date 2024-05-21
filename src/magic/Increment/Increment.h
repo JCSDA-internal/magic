@@ -1,12 +1,4 @@
-/*
- * (C) Copyright 2019-2021 NOAA/NWS/NCEP/EMC.
- *
- * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
- */
-
-#ifndef MAGIC_INCREMENT_INCREMENT_H_
-#define MAGIC_INCREMENT_INCREMENT_H_
+#pragma once
 
 #include <ostream>
 #include <memory>
@@ -92,13 +84,9 @@ class Increment : public util::Printable,
   const util::DateTime & validTime() const {return time_;}
   util::DateTime & validTime() {return time_;}
 
-  int & toFortran() {return keyInc_;}
-  const int & toFortran() const {return keyInc_;}
-
 // Private methods and variables
  private:
   void print(std::ostream &) const;
-  F90inc keyInc_;
   std::shared_ptr<const Geometry> geom_;
   oops::Variables vars_;
   util::DateTime time_;
@@ -106,5 +94,3 @@ class Increment : public util::Printable,
 // -----------------------------------------------------------------------------
 
 }  // namespace magic
-
-#endif  // MAGIC_INCREMENT_INCREMENT_H_
