@@ -1,12 +1,6 @@
-/*
- * (C) Copyright 2019-2021 NOAA/NWS/NCEP/EMC.
- *
- * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
- */
-
-#ifndef MAGIC_GEOMETRY_GEOMETRY_H_
-#define MAGIC_GEOMETRY_GEOMETRY_H_
+// (C) Copyright 2019- NOAA/NWS/NCEP/EMC
+//
+#pragma once
 
 #include <ostream>
 #include <string>
@@ -15,6 +9,10 @@
 #include <boost/shared_ptr.hpp>
 
 #include "eckit/mpi/Comm.h"
+
+
+#include "atlas/field.h"
+#include "atlas/functionspace.h"
 
 #include "atlas/grid.h"
 #include "atlas/grid/detail/grid/GridFactory.h"
@@ -27,11 +25,13 @@
 #include "oops/util/ObjectCounter.h"
 #include "oops/util/Printable.h"
 
-#include "magic/Fortran.h"
-
 // Forward declarations
 namespace eckit {
   class Configuration;
+}
+
+namespace oops {
+  class Variables;
 }
 
 namespace magic {
@@ -49,20 +49,31 @@ namespace magic {
      Geometry(const Geometry &);
      ~Geometry();
 
-     const size_t getNlevs() const {return nLevs_;}
-     std::vector<double> getAk() const {return ak_;}
-     std::vector<double> getBk() const {return bk_;}
-     const atlas::StructuredGrid & getGrid() const {return grid_;}
-     const atlas::Vertical & getVerticalCoord() const {return vcoord_;}
-     const atlas::Mesh & getMesh() const {return mesh_;}
-     const eckit::mpi::Comm & getComm() const {return comm_;}
-     int& toFortran() {return keyGeom_;}
-     const int& toFortran() const {return keyGeom_;}
+     bool levelsAreTopDown() const {return true;}
+
+     std::vector<double> verticalCoord(std::string &) const {return {};}
+    std::vector<size_t> variableSizes(const oops::Variables &) const;
+    void latlon(std::vector<double> &, std::vector<double> &, const bool) const;
+
+    const atlas::FunctionSpace & functionSpace() const {return functionSpace_;}
+    atlas::FunctionSpace & functionSpace() {return functionSpace_;}
+    const atlas::FieldSet & fields() const {return fields_;}
+    atlas::FieldSet & fields() {return fields_;}
+
+    size_t getNlevs() const {return nLevs_;}
+    std::vector<double> getAk() const {return ak_;}
+    std::vector<double> getBk() const {return bk_;}
+    const atlas::StructuredGrid & getGrid() const {return grid_;}
+    const atlas::Vertical & getVerticalCoord() const {return vcoord_;}
+    const atlas::Mesh & getMesh() const {return mesh_;}
+    const eckit::mpi::Comm & getComm() const {return comm_;}
 
    private:
      Geometry & operator=(const Geometry &);
      void print(std::ostream &) const;
      const eckit::mpi::Comm & comm_;
+     atlas::FunctionSpace functionSpace_;
+     atlas::FieldSet fields_;
      atlas::StructuredGrid grid_;
      atlas::Mesh mesh_;
      atlas::functionspace::StructuredColumns fs2d_;
@@ -71,10 +82,7 @@ namespace magic {
      std::vector<double> ak_, bk_;
      atlas::Vertical vcoord_;
      boost::shared_ptr<const Geometry> geom_;
-     int keyGeom_;
   };
 // -----------------------------------------------------------------------------
 
 }  // namespace magic
-
-#endif  // MAGIC_GEOMETRY_GEOMETRY_H_

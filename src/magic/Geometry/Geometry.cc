@@ -1,9 +1,4 @@
-/*
- * (C) Copyright 2019-2021 NOAA/NWS/NCEP/EMC.
- *
- * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
- */
+// (C) Copyright 2019- NOAA/NWS/NCEP/EMC
 
 #include <string>
 #include <numeric>
@@ -13,7 +8,6 @@
 
 #include "oops/util/Logger.h"
 
-#include "magic/Geometry/GeometryFortran.h"
 #include "magic/Geometry/Geometry.h"
 
 // -----------------------------------------------------------------------------
@@ -54,6 +48,9 @@ namespace magic {
         throw e;
     }
 
+    // functionSpace_ = atlas::functionspace::NodeColumns(mesh_, conf);
+    functionSpace_ = atlas::functionspace::StructuredColumns(grid_, conf);
+
     oops::Log::info() << "Geometry::Geometry mesh number of nodes: "
                       << mesh_.nodes().size() << std::endl;
     oops::Log::info() << "Geometry::Geometry mesh footprint: "
@@ -80,8 +77,6 @@ namespace magic {
                       << fs3d_.halo() << std::endl;
     oops::Log::info() << "Geometry::Geometry function space levels: "
                       << fs3d_.levels() << std::endl;
-
-    magic_geo_setup_f90(keyGeom_, &configc);
   }
 // -----------------------------------------------------------------------------
   Geometry::Geometry(const Geometry & other)
@@ -93,17 +88,43 @@ namespace magic {
     ak_ = other.ak_;
     bk_ = other.bk_;
     vcoord_ = other.vcoord_;
-
-    const int key_geo = other.keyGeom_;
-    magic_geo_clone_f90(key_geo, keyGeom_);
   }
 // -----------------------------------------------------------------------------
   Geometry::~Geometry() {
-    magic_geo_delete_f90(keyGeom_);
   }
 // -----------------------------------------------------------------------------
   void Geometry::print(std::ostream & os) const {
-    magic_geo_info_f90(keyGeom_);
+  }
+// -----------------------------------------------------------------------------
+  void Geometry::latlon(std::vector<double> & lats,
+                        std::vector<double> & lons,
+                        const bool halo) const {
+    // get the number of total grid points (including halo)
+    int gridSizeWithHalo = functionSpace_.size();
+    auto vLonlat = atlas::array::make_view<double, 2>(functionSpace_.lonlat());
+
+    // count the number of owned non-ghost points
+    auto vGhost = atlas::array::make_view<int, 1>(functionSpace_.ghost());
+    int gridSizeNoHalo = 0;
+    for (size_t i = 0; i < gridSizeWithHalo; i++) {
+      if (vGhost(i) == 0) gridSizeNoHalo++;
+    }
+
+    // allocate arrays
+    int gridSize = (halo) ? gridSizeWithHalo : gridSizeNoHalo;
+    lons.resize(gridSize);
+    lats.resize(gridSize);
+
+    // fill
+    int idx = 0;
+    for (size_t i=0; i < gridSizeWithHalo; i++) {
+      if (!halo && vGhost(i)) continue;
+      double lon = vLonlat(i, 0);
+      double lat = vLonlat(i, 1);
+      lats[idx] = lat;
+      lons[idx++] = lon;
+    }
+    ASSERT(idx == gridSize);
   }
 // -----------------------------------------------------------------------------
 }  // namespace magic

@@ -10,7 +10,9 @@
 *.sublime-workspace
 *.html
 *.png
+.vscode/
 
 # Ignore the contents of these directories
 build/
 install/
+

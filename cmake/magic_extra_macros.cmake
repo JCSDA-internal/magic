@@ -1,3 +1,5 @@
+# (C) Copyright 2019- NOAA/NWS/NCEP/EMC
+
 # Extra macros to eliminate repetition
 
 # Macro to SYMLINK a FILELIST from SRCDIR to DSTDIR

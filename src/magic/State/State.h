@@ -1,12 +1,6 @@
-/*
- * (C) Copyright 2019-2021 NOAA/NWS/NCEP/EMC.
- *
- * This software is licensed under the terms of the Apache Licence Version 2.0
- * which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
- */
+// (C) Copyright 2019- NOAA/NWS/NCEP/EMC
 
-#ifndef MAGIC_STATE_STATE_H_
-#define MAGIC_STATE_STATE_H_
+#pragma once
 
 #include <memory>
 #include <ostream>
@@ -93,5 +87,3 @@ namespace magic {
 // -----------------------------------------------------------------------------
 
 }  // namespace magic
-
-#endif  // MAGIC_STATE_STATE_H_
