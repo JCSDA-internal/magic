@@ -1,3 +1,5 @@
+// (C) Copyright 2019- NOAA/NWS/NCEP/EMC
+//
 #pragma once
 
 #include <ostream>

@@ -1,3 +1,5 @@
+// (C) Copyright 2019- NOAA/NWS/NCEP/EMC
+
 #include "magic/Traits.h"
 #include "oops/runs/Run.h"
 #include "test/interface/Geometry.h"

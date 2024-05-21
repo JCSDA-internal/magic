@@ -1,3 +1,5 @@
+// (C) Copyright 2019- NOAA/NWS/NCEP/EMC
+
 #include <string>
 #include <numeric>
 
@@ -46,7 +48,7 @@ namespace magic {
         throw e;
     }
 
-    //functionSpace_ = atlas::functionspace::NodeColumns(mesh_, conf);
+    // functionSpace_ = atlas::functionspace::NodeColumns(mesh_, conf);
     functionSpace_ = atlas::functionspace::StructuredColumns(grid_, conf);
 
     oops::Log::info() << "Geometry::Geometry mesh number of nodes: "
@@ -75,7 +77,6 @@ namespace magic {
                       << fs3d_.halo() << std::endl;
     oops::Log::info() << "Geometry::Geometry function space levels: "
                       << fs3d_.levels() << std::endl;
-
   }
 // -----------------------------------------------------------------------------
   Geometry::Geometry(const Geometry & other)
