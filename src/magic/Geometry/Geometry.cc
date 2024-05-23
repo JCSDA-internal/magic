@@ -13,50 +13,55 @@
 // -----------------------------------------------------------------------------
 namespace magic {
 // -----------------------------------------------------------------------------
+  const int HALO_SIZE = 1;
+// -----------------------------------------------------------------------------
   Geometry::Geometry(const eckit::Configuration & conf,
                      const eckit::mpi::Comm & comm)
     : comm_(comm) {
     const eckit::Configuration * configc = &conf;
 
-    grid_ = atlas::Grid(conf);
+    eckit::LocalConfiguration atlas_config = conf.getSubConfiguration("atlas");
+    grid_type_ = atlas_config.getString("type", "structured");
+    halo_size_ = atlas_config.getInt("halo", HALO_SIZE);
 
-    oops::Log::info() << "Geometry::Geometry Grid Name:        "
-                      << grid_.name() << std::endl;
-    oops::Log::info() << "Geometry::Geometry Number of Points: "
-                      << grid_.size() << std::endl;
-    oops::Log::info() << "Geometry::Geometry Grid nx, ny: "
-                      << grid_.nxmax() << ", " << grid_.ny() << std::endl;
-    oops::Log::info() << "Geometry::Geometry Grid y: "
-                      << grid_.y() << std::endl;
-    oops::Log::info() << "Geometry::Geometry Grid Projection Units: "
-                      << grid_.projection().units() << std::endl;
+    // Initialize eckit communicator for atlas
+    eckit::mpi::setCommDefault(comm_.name().c_str());
 
-    oops::Log::info() << "Geometry::Geometry Domain: " << grid_.domain()
-                      << std::endl;
-    oops::Log::info() << "Geometry::Geometry Periodic: " << grid_.periodic()
-                      << std::endl;
-    oops::Log::info() << "Geometry::Geometry Spec: " << grid_.spec()
-                      << std::endl;
+    // Create the grid
+    grid_ = atlas::Grid(atlas_config);
 
-    atlas::StructuredMeshGenerator meshgenerator;
-    try {
-        mesh_ = meshgenerator.generate(grid_);
+    // Generate the partitioner
+    partitioner_ = atlas::grid::Partitioner("equal_regions");
+
+    // Generate the distribution based on the grid and partitioner
+    distribution_ = atlas::grid::Distribution(grid_, partitioner_);
+
+    // Generate the mesh based on the grid and distribution
+    // (this is for the structured grid!)
+    mesh_ = atlas::MeshGenerator("structured").generate(grid_, partitioner_);
+
+    // Generate the function space
+    functionSpace_ = atlas::functionspace::StructuredColumns(grid_,
+                     atlas_config, atlas::option::halo(halo_size_));
+    atlas::functionspace::StructuredColumns fs(functionSpace_);
+
+    auto vGhost = atlas::array::make_view<int, 1>(fs.ghost());
+    auto vLonlat = atlas::array::make_view<double, 2>(fs.lonlat());
+
+    atlas::Field owned = fs.createField<int>(atlas::option::name("owned") |
+                                             atlas::option::levels(1));
+    auto vOwned = atlas::array::make_view<int, 2>(owned);
+
+    auto view_i = atlas::array::make_view<int, 1>(fs.index_i());
+    auto view_j = atlas::array::make_view<int, 1>(fs.index_j());
+    for (atlas::idx_t j = fs.j_begin_halo(); j < fs.j_end_halo(); ++j) {
+      for (atlas::idx_t i = fs.i_begin_halo(j); i < fs.i_end_halo(j); ++i) {
+        atlas::idx_t jnode = fs.index(i, j);
+        vOwned(jnode, 0) = vGhost(jnode) > 0 ? 0 : 1;
+      }
     }
-    catch ( eckit::Exception& e ) {
-        oops::Log::error() << e.what() << std::endl;
-        oops::Log::error() << e.callStack() << std::endl;
-        throw e;
-    }
 
-    // functionSpace_ = atlas::functionspace::NodeColumns(mesh_, conf);
-    functionSpace_ = atlas::functionspace::StructuredColumns(grid_, conf);
-
-    oops::Log::info() << "Geometry::Geometry mesh number of nodes: "
-                      << mesh_.nodes().size() << std::endl;
-    oops::Log::info() << "Geometry::Geometry mesh footprint: "
-                      << mesh_.footprint() << std::endl;
-
-    nLevs_ = conf.getInt("levels", 0.);
+    nLevs_ = atlas_config.getInt("levels", 0.);
     std::vector<double> z(nLevs_);
     std::iota(std::begin(z), std::end(z), 0);
     ak_ = conf.getDoubleVector("ak");
@@ -64,19 +69,16 @@ namespace magic {
 
     vcoord_ = atlas::Vertical(nLevs_, z);
 
-    oops::Log::info() << "Geometry::Geometry (min, max) level: "
-                      << vcoord_.min() << ", "<< vcoord_.max() << std::endl;
+    atlas::Field vert_coord = fs.createField<double>(
+                                atlas::option::name("vert_coord") |
+                                atlas::option::levels(nLevs_));
+    auto vVert_coord = atlas::array::make_view<double, 2>(vert_coord);
 
-    // Generate 2D and 3D functionspaces associated with grid
-    fs2d_ = atlas::functionspace::StructuredColumns(grid_, conf);
-    fs3d_ = atlas::functionspace::StructuredColumns(grid_, vcoord_, conf);
+    fields_ = atlas::FieldSet();
+    fields_.add(owned);
 
-    oops::Log::info() << "Geometry::Geometry function space size: "
-                      << fs3d_.size() << std::endl;
-    oops::Log::info() << "Geometry::Geometry function space halo size: "
-                      << fs3d_.halo() << std::endl;
-    oops::Log::info() << "Geometry::Geometry function space levels: "
-                      << fs3d_.levels() << std::endl;
+    // Print a summary of the geometry
+    this->print(oops::Log::info());
   }
 // -----------------------------------------------------------------------------
   Geometry::Geometry(const Geometry & other)
@@ -94,6 +96,24 @@ namespace magic {
   }
 // -----------------------------------------------------------------------------
   void Geometry::print(std::ostream & os) const {
+    os << "Geometry:" << std::endl;
+    os << "  Grid Name: " << grid_.name() << std::endl;
+    os << "  Number of Points: " << grid_.size() << std::endl;
+    os << "  Grid nx, ny: " << grid_.nxmax() << ", " << grid_.ny() << std::endl;
+    os << "  Grid y: " << grid_.y() << std::endl;
+    os << "  Grid Projection Units: " << grid_.projection().units()
+       << std::endl;
+    os << "  Domain: " << grid_.domain() << std::endl;
+    os << "  Periodic: " << grid_.periodic() << std::endl;
+    os << "  Spec: " << grid_.spec() << std::endl;
+
+    os << "  mesh number of nodes: " << mesh_.nodes().size() << std::endl;
+    os << "  mesh footprint: " << mesh_.footprint() << std::endl;
+
+    os << "  (min, max) level: " << vcoord_.min() << ", " << vcoord_.max()
+       << std::endl;
+
+    os << "  function space size: " << functionSpace_.size() << std::endl;
   }
 // -----------------------------------------------------------------------------
   void Geometry::latlon(std::vector<double> & lats,
