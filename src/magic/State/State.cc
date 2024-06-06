@@ -11,6 +11,7 @@
 #include "oops/base/Variables.h"
 #include "oops/util/DateTime.h"
 #include "oops/util/Duration.h"
+#include "oops/util/FieldSetHelpers.h"
 #include "oops/util/Logger.h"
 
 // #include "ufo/GeoVaLs.h"
@@ -93,7 +94,14 @@ namespace magic {
 // -----------------------------------------------------------------------------
   void State::read(const eckit::Configuration & conf) {
     oops::Log::trace() << "State::State read started." << std::endl;
-    // fields_->read(conf);
+    // std::vector<size_t> variableSizes;
+    // for (const auto & var : vars_.variables()) {
+    //   variableSizes.push_back(vars_.getlevels(var));
+    // }
+    // Read fieldset
+    util::readFieldSet(geom_->getComm(), geom_->functionSpace(),
+                       vars_,  // variableSizes, vars_.variables(),
+                       conf, fldset_);
     oops::Log::trace() << "State::State read done." << std::endl;
   }
 // -----------------------------------------------------------------------------
@@ -163,5 +171,35 @@ void State::deserialize(const std::vector<double> & vect, size_t & index) {
     return zz;
     oops::Log::trace() << "State norm done." << std::endl;
   }
+// -----------------------------------------------------------------------------
+/// Atlas FieldSets
+void State::toFieldSet(atlas::FieldSet & fldset) const {
+  oops::Log::trace() << "State::toFieldSet starting." << std::endl;
+
+  const int size = geom_->functionSpace().size();
+
+  fldset.clear();
+
+  // copy each field
+  for (int vv = 0; vv < vars_.size(); vv++) {
+    std::string var_name = vars_[vv];
+    ASSERT(fldset_.has(var_name));
+    atlas::Field fld = geom_->functionSpace().createField<double>(
+      atlas::option::levels(1) | atlas::option::name(var_name));
+    atlas::Field fld_src = fldset_.field(var_name);
+    geom_->functionSpace().haloExchange(fld_src);
+
+    fldset.add(fld);
+  }
+  geom_->functionSpace().haloExchange(fldset);
+
+  oops::Log::trace() << "State::toFieldSet done." << std::endl;
+}
+// -----------------------------------------------------------------------------
+void State::fromFieldSet(const atlas::FieldSet & fldset) {
+  oops::Log::trace() << "State::fromFieldSet starting." << std::endl;
+  // TODO(aerorahul): Implement this function
+  oops::Log::trace() << "State::fromFieldSet done." << std::endl;
+}
 // -----------------------------------------------------------------------------
 }  // namespace magic

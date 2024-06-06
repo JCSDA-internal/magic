@@ -38,8 +38,7 @@ namespace magic {
       static const std::string classname() {return "magic::State";}
 
       /// Constructor, destructor
-      State(const Geometry &, const oops::Variables &,
-            const util::DateTime &);
+      State(const Geometry &, const oops::Variables &, const util::DateTime &);
       State(const Geometry &, const eckit::Configuration &);
       State(const Geometry &, const State &);
       State(const State &);
@@ -63,6 +62,10 @@ namespace magic {
       /// Access to fields
       const oops::Variables & variables() const {return vars_;}
 
+      /// Atlas FieldSet
+      void toFieldSet(atlas::FieldSet &) const;
+      void fromFieldSet(const atlas::FieldSet &);
+
       /// Serialize and deserialize
       size_t serialSize() const;
       void serialize(std::vector<double> &) const;
@@ -83,6 +86,7 @@ namespace magic {
       std::shared_ptr<const Geometry> geom_;
       oops::Variables vars_;
       util::DateTime time_;
+      atlas::FieldSet fldset_;
   };
 // -----------------------------------------------------------------------------
 
