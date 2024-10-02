@@ -5,6 +5,7 @@ set -eux
 #shellcheck disable=SC2155
 readonly DIR_ROOT=$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[0]}" )" )/.." && pwd -P)
 
+#==============================================================================#
 # User Options
 BUILD_CLEAN=${BUILD_CLEAN:-"NO"}
 BUILD_TYPE=${BUILD_TYPE:-"Release"}
@@ -14,10 +15,26 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-"${DIR_ROOT}/install"}
 CMAKE_OPTS=${CMAKE_OPTS:-}
 
 #==============================================================================#
+# detect the machine
+source "${DIR_ROOT}/ush/detect_machine.sh"
 
-# detect the machine and load the appropriate modules
-source "${DIR_ROOT}/ush/load.sh"
+#==============================================================================#
+# Load modules from a known machine
+case "${MACHINE_ID}" in
+    UNKNOWN)
+        echo "Unknown machine"
+        ;;
+    *)
+        set +x
+        source "${DIR_ROOT}/ush/module-setup.sh"
+        module use "${DIR_ROOT}/modulefiles"
+        module load "magic_${MACHINE_ID}.${COMPILER}"
+        module list
+        set -x
+        ;;
+esac
 
+#==============================================================================#
 # Collect machine specific cmake options
 case "${MACHINE_ID}" in
     jet*|hera*|hercules*|orion*|s4*|wcoss2|cheyenne*)

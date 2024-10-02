@@ -16,3 +16,6 @@
 build/
 install/
 
+# Ignore files
+log.build*
+build.log*
